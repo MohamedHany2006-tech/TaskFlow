@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow | profile</title>
+    <link href="bootstrap.min.css" rel="stylesheet" >
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="style(M).css">
+</head>
+<body>
+    <div class="container-fluid">
+    <div class="row">
+        
+        <!-- Sidebar Navigation -->
+         <aside class="col-md-3 col-lg-2 sidebar p-3 d-flex flex-column justify-content-between min-vh-100">
+            <div>
+                <h3 class="text-white mb-4">
+                    <i class="bi bi-check2-square"></i>
+                    TaskFlow
+                </h3>
+                
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html">
+                            <i class="bi bi-grid me-2"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="mytasks.html">
+                            <i class="bi bi-list-task me-2"></i>
+                            My Tasks
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <i class="bi bi-person me-2"></i>
+                            Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="settings.html">
+                            <i class="bi bi-gear me-2"></i>
+                            Settings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Logout Link in Bottom -->
+            <ul class="nav flex-column mt-auto pt-3 border-top border-secondary">
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="login.html">
+                        <i class="bi bi-box-arrow-right me-2"></i>
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </aside>
+<!-- Main Content Wrapper -->
+        <main class="col-md-9 col-lg-10 main-content p-4">
+            
+            <!-- Header Section -->
+            <header class="mb-4">
+                <h2 class="fw-bold m-0">Account Settings</h2>
+                <p class="text-muted m-0">Manage your profile information and account details.</p>
+            </header>
+
+            <div class="row g-4">
+                
+                <!-- Left Column: User Summary Card -->
+                <div class="col-lg-4">
+                    <div class="card border-0 shadow-sm text-center p-4">
+                        <div class="position-relative d-inline-block mx-auto mb-3">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto fs-1 fw-bold" style="width: 100px; height: 100px;" id="avatarInitial">
+                                U
+                            </div>
+                        </div>
+                        <h4 class="fw-bold mb-1" id="profileDisplayName">User Name</h4>
+                        <p class="text-muted small mb-3" id="profileDisplayEmail">user@example.com</p>
+                        
+                        <hr>
+
+                        <!-- Quick Task Stats -->
+                        <div class="row text-center pt-2">
+                            <div class="col-6 border-end">
+                                <h5 class="fw-bold m-0" id="userTotalTasks">0</h5>
+                                <span class="text-muted small">Total Tasks</span>
+                            </div>
+                            <div class="col-6">
+                                <h5 class="fw-bold text-success m-0" id="userCompletedTasks">0</h5>
+                                <span class="text-muted small">Completed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Edit Profile Form -->
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-sm p-4">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-person-gear me-2"></i> Edit Profile Information</h5>
+                        
+                        <!-- Alert Message -->
+                        <div id="profileAlert" class="alert d-none" role="alert"></div>
+
+                        <form id="profileForm">
+                            <div class="mb-3">
+                                <label for="editUsername" class="form-label fw-bold">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                    <input type="text" class="form-control" id="editUsername" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="editEmail" class="form-label fw-bold">Email Address</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" class="form-control" id="editEmail" required>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <h6 class="fw-bold mb-3"><i class="bi bi-shield-lock me-2"></i> Change Password</h6>
+
+                            <div class="mb-3">
+                                <label for="editPassword" class="form-label">New Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                    <input type="password" class="form-control" id="editPassword" placeholder="Leave blank to keep current password">
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<!-- Bootstrap Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', loadProfileData);
+
+function loadProfileData() {
+    // 1. تحميل بيانات المستخدم من LocalStorage
+    let registeredUser = JSON.parse(localStorage.getItem('registeredUser')) || {
+        username: 'Admin User',
+        email: localStorage.getItem('currentUser') || 'admin@taskflow.com',
+        password: '123'
+    };
+
+    // تعبئة البيانات في الواجهة والنموذج
+    document.getElementById('editUsername').value = registeredUser.username || '';
+    document.getElementById('editEmail').value = registeredUser.email || '';
+    
+    document.getElementById('profileDisplayName').innerText = registeredUser.username || 'User';
+    document.getElementById('profileDisplayEmail').innerText = registeredUser.email || '';
+    
+    // حرف الصورة الرمزية (Avatar)
+    const initial = (registeredUser.username || 'U').charAt(0).toUpperCase();
+    document.getElementById('avatarInitial').innerText = initial;
+
+    // 2. تحميل إحصائيات المهام الخاصة بالمستخدم
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    document.getElementById('userTotalTasks').innerText = tasks.length;
+    document.getElementById('userCompletedTasks').innerText = tasks.filter(t => t.status === 'Completed').length;
+}
+
+// حفظ البيانات المعدلة
+document.getElementById('profileForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const username = document.getElementById('editUsername').value.trim();
+    const email = document.getElementById('editEmail').value.trim();
+    const newPassword = document.getElementById('editPassword').value.trim();
+
+    let registeredUser = JSON.parse(localStorage.getItem('registeredUser')) || {};
+
+    registeredUser.username = username;
+    registeredUser.email = email;
+    if (newPassword !== "") {
+        registeredUser.password = newPassword;
+    }
+
+    // تحديث البيانات في LocalStorage
+    localStorage.setItem('registeredUser', JSON.stringify(registeredUser));
+    localStorage.setItem('currentUser', email);
+
+    // إظهار تنبيه النجاح
+    const alertBox = document.getElementById('profileAlert');
+    alertBox.className = 'alert alert-success';
+    alertBox.innerText = 'Profile updated successfully!';
+    alertBox.classList.remove('d-none');
+
+    // إعادة إعراض البيانات المحدثة
+    loadProfileData();
+
+    // إخفاء التنبيه بعد 3 ثواني
+    setTimeout(() => {
+        alertBox.classList.add('d-none');
+    }, 3000);
+});
+
+// دالة تسجيل الخروج
+function logout() {
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('currentUser');
+    window.location.href = 'login.html';
+}
+</script>
+</body>
+</html>

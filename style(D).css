@@ -1,0 +1,38 @@
+
+        body{
+            background:#f8fafc;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .sidebar{
+            min-height:100vh;
+            background:#111827;
+        }
+
+        .sidebar .nav-link{
+            color:#cbd5e1;
+            padding:12px;
+            border-radius:10px;
+            margin-bottom:5px;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .active{
+            background:#4f46e5;
+            color:white;
+        }
+
+        .card{
+            border:none;
+            border-radius:18px;
+            box-shadow:0 5px 15px rgba(0,0,0,.05);
+        }
+
+        .stat-card i{
+            font-size:35px;
+        }
+
+        .task-card:hover{
+            transform:translateY(-5px);
+            transition:.3s;
+        }
