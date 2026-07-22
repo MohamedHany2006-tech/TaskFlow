@@ -1,38 +1,208 @@
+/* ===========================
+   General
+=========================== */
 
-        body{
-            background:#f8fafc;
-            font-family: 'Segoe UI', sans-serif;
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-        .sidebar{
-            min-height:100vh;
-            background:#111827;
-        }
+body{
+    background:#f8fafc;
+    font-family:'Segoe UI',sans-serif;
+}
 
-        .sidebar .nav-link{
-            color:#cbd5e1;
-            padding:12px;
-            border-radius:10px;
-            margin-bottom:5px;
-        }
 
-        .sidebar .nav-link:hover,
-        .sidebar .active{
-            background:#4f46e5;
-            color:white;
-        }
+/* ===========================
+   Sidebar
+=========================== */
 
-        .card{
-            border:none;
-            border-radius:18px;
-            box-shadow:0 5px 15px rgba(0,0,0,.05);
-        }
+.sidebar{
 
-        .stat-card i{
-            font-size:35px;
-        }
+    position:fixed;
+    top:0;
+    left:0;
 
-        .task-card:hover{
-            transform:translateY(-5px);
-            transition:.3s;
-        }
+    width:250px;
+    height:100vh;
+
+    background:#111827;
+
+    padding:20px;
+    overflow-y:auto;
+
+}
+
+.sidebar h3{
+
+    color:white;
+    margin-bottom:30px;
+
+}
+
+.sidebar .nav-link{
+
+    color:#cbd5e1;
+    padding:12px 15px;
+    border-radius:10px;
+    margin-bottom:8px;
+    transition:.3s;
+
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active{
+
+    background:#4f46e5;
+    color:white;
+
+}
+
+
+/* ===========================
+   Main Content
+=========================== */
+
+.main-content{
+
+    margin-left:250px;
+    padding:30px;
+
+}
+
+
+/* ===========================
+   Search & Select
+=========================== */
+
+.form-control,
+.form-select{
+
+    height:48px;
+    border-radius:12px;
+
+}
+
+.input-group-text{
+
+    border-radius:12px 0 0 12px;
+
+}
+
+
+/* ===========================
+   Buttons
+=========================== */
+
+.btn{
+
+    border-radius:12px;
+
+}
+
+.btn-primary{
+
+    background:#4f46e5;
+    border:none;
+
+}
+
+.btn-primary:hover{
+
+    background:#4338ca;
+
+}
+
+
+/* ===========================
+   Cards
+=========================== */
+
+.card{
+
+    border:none;
+    border-radius:18px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+.task-card{
+
+    transition:.3s;
+
+}
+
+.task-card:hover{
+
+    transform:translateY(-8px);
+    box-shadow:0 15px 35px rgba(0,0,0,.12);
+
+}
+
+
+/* ===========================
+   Badges
+=========================== */
+
+.badge{
+
+    font-size:14px;
+    padding:8px 12px;
+    border-radius:10px;
+
+}
+
+
+/* ===========================
+   Task Buttons
+=========================== */
+
+.task-card .btn{
+
+    width:40px;
+    height:40px;
+    border-radius:50%;
+
+}
+
+
+/* ===========================
+   Responsive
+=========================== */
+
+@media(max-width:992px){
+
+    .sidebar{
+
+        width:220px;
+
+    }
+
+    .main-content{
+
+        margin-left:220px;
+
+    }
+
+}
+
+
+@media(max-width:768px){
+
+    .sidebar{
+
+        position:relative;
+        width:100%;
+        height:auto;
+
+    }
+
+    .main-content{
+
+        margin-left:0;
+        padding:20px;
+
+    }
+
+}
