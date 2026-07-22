@@ -162,11 +162,11 @@ registerForm.addEventListener('submit', function(e) {
 
     // 4. إظهار رسالة نجاح والتحويل لصفحة اللوجن
     alertMessage.className = 'alert alert-success';
-    alertMessage.innerText = 'Account created successfully! Redirecting you to the login page....';
+    alertMessage.innerText = 'Account created successfully!';
     alertMessage.classList.remove('d-none');
 
     setTimeout(() => {
-        window.location.href = 'index.html';
+        window.location.href = 'dashboard.html';
     }, 1500);
 });
 </script>

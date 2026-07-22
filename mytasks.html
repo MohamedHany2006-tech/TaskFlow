@@ -14,7 +14,7 @@
     <div class="row">
         
         <!-- Sidebar Navigation -->
-         <aside class="col-md-3 col-lg-2 sidebar p-3 d-flex flex-column justify-content-between min-vh-100">
+        <aside class="col-md-3 col-lg-2 sidebar p-3 d-flex flex-column justify-content-between min-vh-100">
             <div>
                 <h3 class="text-white mb-4">
                     <i class="bi bi-check2-square"></i>
@@ -78,34 +78,38 @@
                         <span class="input-group-text">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control" placeholder="Search tasks...">
+                        <!-- إضافة id="searchInput" -->
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search tasks...">
                     </div>
                 </div>
                 
                 <div class="col-lg-2 col-md-4">
-                    <select class="form-select" aria-label="Filter by status">
-                        <option selected>Status</option>
-                        <option value="pending">Pending</option>
-                        <option value="in_progress">In Progress</option>
-                        <option value="completed">Completed</option>
+                    <!-- إضافة id="statusFilter" وتحديث الـ values -->
+                    <select class="form-select" id="statusFilter" aria-label="Filter by status">
+                        <option value="all" selected>All Statuses</option>
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
                     </select>
                 </div>
                 
                 <div class="col-lg-2 col-md-4">
-                    <select class="form-select" aria-label="Filter by priority">
-                        <option selected>Priority</option>
-                        <option value="high">High</option>
-                        <option value="medium">Medium</option>
-                        <option value="low">Low</option>
+                    <!-- إضافة id="priorityFilter" وتحديث الـ values -->
+                    <select class="form-select" id="priorityFilter" aria-label="Filter by priority">
+                        <option value="all" selected>All Priorities</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
                     </select>
                 </div>
                 
                 <div class="col-lg-3 col-md-4">
-                    <select class="form-select" aria-label="Filter by category">
-                        <option selected>Category</option>
-                        <option value="work">Work</option>
-                        <option value="study">Study</option>
-                        <option value="personal">Personal</option>
+                    <!-- إضافة id="categoryFilter" وتحديث الـ values -->
+                    <select class="form-select" id="categoryFilter" aria-label="Filter by category">
+                        <option value="all" selected>All Categories</option>
+                        <option value="Work">Work</option>
+                        <option value="Study">Study</option>
+                        <option value="Personal">Personal</option>
                     </select>
                 </div>
             </section>
@@ -236,183 +240,223 @@
 
 <!-- Bootstrap Bundle JS -->
 <script src="bootstrap.bundle.min.js"></script>
-
+<script src="theme.js"></script>
 <script>
-const tasksContainer = document.getElementById('tasksContainer');
-const addTaskForm = document.getElementById('addTaskForm');
-const editTaskForm = document.getElementById('editTaskForm');
+    const tasksContainer = document.getElementById('tasksContainer');
+    const addTaskForm = document.getElementById('addTaskForm');
+    const editTaskForm = document.getElementById('editTaskForm');
 
-// 1. استرجاع التاسكات عند فتح الصفحة
-document.addEventListener('DOMContentLoaded', loadTasksFromLocalStorage);
+    // عناصر البحث والتصفية
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+    const priorityFilter = document.getElementById('priorityFilter');
+    const categoryFilter = document.getElementById('categoryFilter');
 
-// 2. إضافة مهمة جديدة
-addTaskForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const taskData = {
-        id: Date.now(),
-        title: document.getElementById('taskTitle').value,
-        desc: document.getElementById('taskDesc').value,
-        priority: document.getElementById('taskPriority').value,
-        category: document.getElementById('taskCategory').value,
-        date: document.getElementById('taskDate').value,
-        status: 'Pending'
-    };
-
-    saveTaskToLocalStorage(taskData);
-    renderTaskCard(taskData);
-
-    addTaskForm.reset();
-    const modalElement = document.getElementById('addTaskModal');
-    const modal = bootstrap.Modal.getInstance(modalElement);
-    modal.hide();
-});
-
-// 3. حفظ التعديلات عند تقديم نموذج التعديل
-editTaskForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const id = Number(document.getElementById('editTaskId').value);
-    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-
-    const index = tasks.findIndex(task => task.id === id);
-    if (index !== -1) {
-        tasks[index].title = document.getElementById('editTaskTitle').value;
-        tasks[index].desc = document.getElementById('editTaskDesc').value;
-        tasks[index].priority = document.getElementById('editTaskPriority').value;
-        tasks[index].category = document.getElementById('editTaskCategory').value;
-        tasks[index].status = document.getElementById('editTaskStatus').value;
-        tasks[index].date = document.getElementById('editTaskDate').value;
-
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-        
-        // إعادة تحميل جميع الكروت لتحديث البيانات على الشاشة
+    // 1. استرجاع التاسكات عند فتح الصفحة
+    document.addEventListener('DOMContentLoaded', () => {
         loadTasksFromLocalStorage();
+        setupFilterListeners();
+    });
+
+    // 2. إعداد مستمعي الأحداث للفلترة والبحث
+    function setupFilterListeners() {
+        searchInput.addEventListener('input', filterAndRenderTasks);
+        statusFilter.addEventListener('change', filterAndRenderTasks);
+        priorityFilter.addEventListener('change', filterAndRenderTasks);
+        categoryFilter.addEventListener('change', filterAndRenderTasks);
     }
 
-    const modalElement = document.getElementById('editTaskModal');
-    const modal = bootstrap.Modal.getInstance(modalElement);
-    modal.hide();
-});
+    // 3. دالة الفلترة والتصفية الرئيسية
+    function filterAndRenderTasks() {
+        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        
+        const searchValue = searchInput.value.toLowerCase().trim();
+        const selectedStatus = statusFilter.value;
+        const selectedPriority = priorityFilter.value;
+        const selectedCategory = categoryFilter.value;
 
-// دالة فتح الـ Modal وتعبئة البيانات للتعديل
-function openEditModal(id) {
-    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    const task = tasks.find(t => t.id === id);
+        const filteredTasks = tasks.filter(task => {
+            // البحث في العنوان أو الوصف
+            const matchesSearch = task.title.toLowerCase().includes(searchValue) || 
+                                  (task.desc && task.desc.toLowerCase().includes(searchValue));
 
-    if (task) {
-        document.getElementById('editTaskId').value = task.id;
-        document.getElementById('editTaskTitle').value = task.title;
-        document.getElementById('editTaskDesc').value = task.desc;
-        document.getElementById('editTaskPriority').value = task.priority;
-        document.getElementById('editTaskCategory').value = task.category;
-        document.getElementById('editTaskStatus').value = task.status;
-        document.getElementById('editTaskDate').value = task.date;
+            // الفلترة حسب الحالة والأولوية والتصنيف
+            const matchesStatus = selectedStatus === 'all' || task.status === selectedStatus;
+            const matchesPriority = selectedPriority === 'all' || task.priority === selectedPriority;
+            const matchesCategory = selectedCategory === 'all' || task.category === selectedCategory;
 
-        const editModal = new bootstrap.Modal(document.getElementById('editTaskModal'));
-        editModal.show();
+            return matchesSearch && matchesStatus && matchesPriority && matchesCategory;
+        });
+
+        // إعادة عرض التاسكات المفلترة
+        renderTasksList(filteredTasks);
     }
-}
 
-// دالة حفظ التاسك في LocalStorage
-function saveTaskToLocalStorage(task) {
-    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    tasks.push(task);
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-}
+    // 4. عرض قائمة المهام المفلترة
+    function renderTasksList(tasks) {
+        tasksContainer.innerHTML = '';
 
-// دالة تحميل كل التاسكات
-function loadTasksFromLocalStorage() {
-    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        if (tasks.length === 0) {
+            tasksContainer.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="bi bi-search fs-1 text-muted"></i>
+                    <p class="text-muted mt-2 fs-5">No tasks match your filter/search criteria.</p>
+                </div>
+            `;
+            return;
+        }
 
-    if (tasks.length === 0) {
-        const defaultTask = {
-            id: 1,
-            title: "Build Portfolio",
-            desc: "Create responsive portfolio website using Bootstrap.",
-            priority: "High",
-            category: "Work",
-            date: "2026-07-25",
-            status: "In Progress"
+        tasks.forEach(task => renderTaskCard(task));
+    }
+
+    // 5. إضافة مهمة جديدة
+    addTaskForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const taskData = {
+            id: Date.now(),
+            title: document.getElementById('taskTitle').value,
+            desc: document.getElementById('taskDesc').value,
+            priority: document.getElementById('taskPriority').value,
+            category: document.getElementById('taskCategory').value,
+            date: document.getElementById('taskDate').value,
+            status: 'Pending'
         };
-        tasks.push(defaultTask);
+
+        saveTaskToLocalStorage(taskData);
+        filterAndRenderTasks(); // تحديث القائمة بعد الإضافة
+
+        addTaskForm.reset();
+        const modalElement = document.getElementById('addTaskModal');
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        modal.hide();
+    });
+
+    // 6. حفظ التعديلات عند تقديم نموذج التعديل
+    editTaskForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const id = Number(document.getElementById('editTaskId').value);
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+        const index = tasks.findIndex(task => task.id === id);
+        if (index !== -1) {
+            tasks[index].title = document.getElementById('editTaskTitle').value;
+            tasks[index].desc = document.getElementById('editTaskDesc').value;
+            tasks[index].priority = document.getElementById('editTaskPriority').value;
+            tasks[index].category = document.getElementById('editTaskCategory').value;
+            tasks[index].status = document.getElementById('editTaskStatus').value;
+            tasks[index].date = document.getElementById('editTaskDate').value;
+
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            filterAndRenderTasks(); // إعادة عرض المهام المعدلة
+        }
+
+        const modalElement = document.getElementById('editTaskModal');
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        modal.hide();
+    });
+
+    // فتح الـ Modal وتعبئة البيانات للتعديل
+    function openEditModal(id) {
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        const task = tasks.find(t => t.id === id);
+
+        if (task) {
+            document.getElementById('editTaskId').value = task.id;
+            document.getElementById('editTaskTitle').value = task.title;
+            document.getElementById('editTaskDesc').value = task.desc;
+            document.getElementById('editTaskPriority').value = task.priority;
+            document.getElementById('editTaskCategory').value = task.category;
+            document.getElementById('editTaskStatus').value = task.status;
+            document.getElementById('editTaskDate').value = task.date;
+
+            const editModal = new bootstrap.Modal(document.getElementById('editTaskModal'));
+            editModal.show();
+        }
+    }
+
+    // حفظ التاسك في LocalStorage
+    function saveTaskToLocalStorage(task) {
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        tasks.push(task);
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }
 
-    tasksContainer.innerHTML = '';
-    tasks.forEach(task => renderTaskCard(task));
-}
+    // تحميل كل التاسكات
+   function loadTasksFromLocalStorage() {
+    filterAndRenderTasks();
+    }
 
-// دالة بناء رسمة الكارت
-function renderTaskCard(task) {
-    const dateObj = new Date(task.date);
-    const formattedDate = isNaN(dateObj) ? task.date : dateObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
 
-    let badgeColor = 'bg-secondary';
-    if (task.priority === 'High') badgeColor = 'bg-danger';
-    if (task.priority === 'Medium') badgeColor = 'bg-warning text-dark';
-    if (task.priority === 'Low') badgeColor = 'bg-info text-dark';
+    // بناء كارت المهمة
+    function renderTaskCard(task) {
+        const dateObj = new Date(task.date);
+        const formattedDate = isNaN(dateObj) ? task.date : dateObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
 
-    const cardHTML = `
-        <div class="col-lg-4 col-md-6" id="task-${task.id}">
-            <div class="card task-card h-100 shadow-sm">
-                <div class="card-body d-flex flex-column justify-content-between">
-                    <div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="card-title mb-0">${task.title}</h5>
-                            <span class="badge ${badgeColor}">${task.priority}</span>
-                        </div>
-                        <p class="text-muted mt-3">${task.desc}</p>
-                    </div>
-                    <div>
-                        <hr>
-                        <div class="d-flex justify-content-between small text-muted mb-2">
-                            <span><i class="bi bi-folder me-1"></i> ${task.category}</span>
-                            <span><i class="bi bi-calendar me-1"></i> ${formattedDate}</span>
+        let badgeColor = 'bg-secondary';
+        if (task.priority === 'High') badgeColor = 'bg-danger';
+        if (task.priority === 'Medium') badgeColor = 'bg-warning text-dark';
+        if (task.priority === 'Low') badgeColor = 'bg-info text-dark';
+
+        const cardHTML = `
+            <div class="col-lg-4 col-md-6" id="task-${task.id}">
+                <div class="card task-card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">${task.title}</h5>
+                                <span class="badge ${badgeColor}">${task.priority}</span>
+                            </div>
+                            <p class="text-muted mt-3">${task.desc || ''}</p>
                         </div>
                         <div>
-                            <span class="badge bg-secondary">${task.status}</span>
-                        </div>
-                        <div class="mt-3 d-flex gap-2">
-                            <button class="btn btn-outline-primary btn-sm flex-fill" aria-label="Edit Task" onclick="openEditModal(${task.id})">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-outline-success btn-sm flex-fill" aria-label="Complete Task" onclick="toggleComplete(${task.id})">
-                                <i class="bi bi-check2"></i>
-                            </button>
-                            <button class="btn btn-outline-danger btn-sm flex-fill" aria-label="Delete Task" onclick="deleteTask(${task.id})">
-                                <i class="bi bi-trash"></i>
-                            </button>
+                            <hr>
+                            <div class="d-flex justify-content-between small text-muted mb-2">
+                                <span><i class="bi bi-folder me-1"></i> ${task.category}</span>
+                                <span><i class="bi bi-calendar me-1"></i> ${formattedDate}</span>
+                            </div>
+                            <div>
+                                <span class="badge bg-secondary">${task.status}</span>
+                            </div>
+                            <div class="mt-3 d-flex gap-2">
+                                <button class="btn btn-outline-primary btn-sm flex-fill" aria-label="Edit Task" onclick="openEditModal(${task.id})">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-outline-success btn-sm flex-fill" aria-label="Complete Task" onclick="toggleComplete(${task.id})">
+                                    <i class="bi bi-check2"></i>
+                                </button>
+                                <button class="btn btn-outline-danger btn-sm flex-fill" aria-label="Delete Task" onclick="deleteTask(${task.id})">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    `;
+        `;
 
-    tasksContainer.insertAdjacentHTML('beforeend', cardHTML);
-}
-
-// دالة مسح التاسك
-function deleteTask(id) {
-    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    tasks = tasks.filter(task => task.id !== id);
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-    
-    const taskElement = document.getElementById(`task-${id}`);
-    if (taskElement) taskElement.remove();
-}
-
-// دالة سريعة لإنهاء التاسك (Toggle Complete)
-function toggleComplete(id) {
-    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    const task = tasks.find(t => t.id === id);
-    if (task) {
-        task.status = task.status === 'Completed' ? 'Pending' : 'Completed';
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-        loadTasksFromLocalStorage();
+        tasksContainer.insertAdjacentHTML('beforeend', cardHTML);
     }
-}
+
+    // مسح التاسك
+    function deleteTask(id) {
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        tasks = tasks.filter(task => task.id !== id);
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        filterAndRenderTasks();
+    }
+
+    // تبديل حالة الإنجاز
+    function toggleComplete(id) {
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        const task = tasks.find(t => t.id === id);
+        if (task) {
+            task.status = task.status === 'Completed' ? 'Pending' : 'Completed';
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            filterAndRenderTasks();
+        }
+    }
 </script>
 </body>
 </html>

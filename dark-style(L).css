@@ -1,0 +1,68 @@
+body {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.login-card {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, .2);
+}
+
+.left-side {
+    background: #111827;
+    color: white;
+    padding: 50px;
+}
+
+.left-side h1 {
+    font-weight: bold;
+}
+
+.right-side {
+    padding: 50px;
+    background: white;
+}
+
+.form-control {
+    height: 50px;
+    border-radius: 12px;
+}
+
+.btn-login {
+    background: #4f46e5;
+    color: white;
+    height: 50px;
+    border-radius: 12px;
+}
+
+.btn-login:hover {
+    background: #4338ca;
+    color: white;
+}
+
+.logo {
+    font-size: 45px;
+}
+
+.social-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.social-btn:hover {
+    background: #4f46e5;
+    color: white;
+}

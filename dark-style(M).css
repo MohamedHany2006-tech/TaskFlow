@@ -1,0 +1,104 @@
+body {
+    background: #f8fafc;
+    font-family: 'Segoe UI', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Sidebar */
+.sidebar {
+    min-height: 100vh;
+    background: #111827;
+}
+
+.sidebar .nav-link {
+    color: #cbd5e1;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    transition: all 0.2s ease;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .active {
+    background: #4f46e5;
+    color: white;
+}
+
+/* Cards & Tasks */
+.card {
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, .05);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.stat-card i {
+    font-size: 35px;
+}
+
+.task-card {
+    border: none;
+    border-radius: 18px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
+}
+
+.task-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, .12);
+}
+
+/* Controls */
+.form-control,
+.form-select {
+    height: 45px;
+}
+
+.btn {
+    border-radius: 12px;
+}
+
+/* ==========================================
+   Dark Mode Support
+   ========================================== */
+body.bg-dark {
+    background-color: #0f172a !important;
+    color: #f1f5f9 !important;
+}
+
+body.bg-dark .card {
+    background-color: #1e293b !important;
+    color: #f1f5f9 !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, .3);
+}
+
+body.bg-dark .text-muted {
+    color: #94a3b8 !important;
+}
+
+body.bg-dark .table {
+    color: #f1f5f9 !important;
+}
+
+body.bg-dark .table-light {
+    background-color: #334155 !important;
+    color: #f1f5f9 !important;
+}
+
+body.bg-dark .form-control,
+body.bg-dark .form-select,
+body.bg-dark .input-group-text {
+    background-color: #334155 !important;
+    border-color: #475569 !important;
+    color: #f1f5f9 !important;
+}
+
+body.bg-dark .form-control::placeholder {
+    color: #94a3b8 !important;
+}
+
+body.bg-dark .border,
+body.bg-dark .border-top,
+body.bg-dark .border-end {
+    border-color: #334155 !important;
+}
