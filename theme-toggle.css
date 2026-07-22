@@ -1,7 +1,7 @@
 /* ألوان الوضع الداكن للموقع */
 body.dark-mode {
     background-color: #121212 !important;
-    color: #f1f1f1 !important;
+    color: #0f13f1 !important;
 }
 
 /* الكروت داخل الصفحات */
@@ -21,4 +21,7 @@ body.dark-mode .sidebar {
 body.dark-mode .text-muted,
 body.dark-mode p {
     color: #b0b0b0 !important;
+}
+.addTaskForm{
+    color :#060878 !important;
 }
