@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>TaskFlow | My Tasks</title>
-        <link rel="stylesheet" href="bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-        <link rel="stylesheet" href="style(M).css">
-        <link rel="stylesheet" href="theme-toggle.css">
-        <script src="theme-toggle.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow | My Tasks</title>
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="style(M).css">
+    <link rel="stylesheet" href="theme-toggle.css">
+    <script src="theme-toggle.js"></script>
 </head>
 <body>
 
-<!-- Mobile Navbar (Only visible on small screens) -->
+<!-- Mobile Navbar (Visible on small screens) -->
 <nav class="navbar navbar-dark bg-dark d-md-none px-3 mb-3">
     <a class="navbar-brand fw-bold" href="#">
         <i class="bi bi-check2-square me-1"></i> TaskFlow
@@ -25,7 +26,7 @@
 <div class="container-fluid">
     <div class="row">
         
-        <!-- Sidebar Navigation (Desktop Static & Mobile Offcanvas) -->
+        <!-- Sidebar Navigation -->
         <aside class="col-md-3 col-lg-2 offcanvas-md offcanvas-start bg-dark text-white p-3 min-vh-100 d-flex flex-column justify-content-between" id="mobileSidebar" tabindex="-1">
             <div class="w-100">
                 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -59,7 +60,7 @@
                 </ul>
             </div>
 
-            <!-- Logout Link in Bottom -->
+            <!-- Logout Link -->
             <ul class="nav flex-column mt-auto pt-3 border-top border-secondary w-100">
                 <li class="nav-item">
                     <a class="nav-link text-danger" href="index.html">
@@ -72,12 +73,48 @@
         <!-- Main Content Wrapper -->
         <main class="col-md-9 col-lg-10 ms-sm-auto px-md-4 py-3">
             
-            <!-- Header Section -->
+            <!-- Main Header Section -->
             <header class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
                 <h2 class="fw-bold m-0">My Tasks</h2>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
-                    <i class="bi bi-plus-lg me-1"></i> Add Task
-                </button>
+                
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Notification Dropdown -->
+<div class="dropdown me-2">
+    <button class="btn btn-light position-relative rounded-circle shadow-sm p-2 notif-btn" type="button" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+        <i class="bi bi-bell fs-5 text-secondary"></i>
+        <!-- Badge for unread notifications -->
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" id="notifBadge">
+            0
+        </span>
+    </button>
+
+    <!-- Dropdown Menu -->
+    <div class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-0 notif-dropdown" aria-labelledby="notifDropdown">
+        <!-- Notification Header -->
+        <div class="dropdown-header d-flex justify-content-between align-items-center p-3 border-bottom bg-light rounded-top">
+            <h6 class="m-0 fw-bold text-dark d-flex align-items-center gap-2">
+                <i class="bi bi-bell-fill text-primary"></i> Notifications
+            </h6>
+            <button class="btn btn-link btn-sm p-0 text-decoration-none text-muted extra-small hover-underline" onclick="clearNotifications()">
+                Clear All
+            </button>
+        </div>
+        
+        <!-- Notification Items List -->
+        <ul class="list-unstyled mb-0 p-2" id="notifList" style="max-height: 320px; overflow-y: auto;">
+            <li id="emptyNotifMsg" class="text-center py-4 text-muted small">
+                <i class="bi bi-inbox fs-3 d-block mb-1 text-black-50"></i>
+                No new notifications
+            </li>
+        </ul>
+    </div>
+</div>
+
+                    <!-- Add Task Button -->
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                        <i class="bi bi-plus-lg me-1"></i> Add Task
+                    </button>
+                </div>
             </header>
             
             <!-- Filters & Search Bar -->
@@ -119,9 +156,54 @@
                 </div>
             </section>
 
-            <!-- Task Cards Grid -->
-            <section class="row g-3" id="tasksContainer">
-                <!-- التاسكات المحفوظة بتنزل هنا -->
+            <!-- Kanban Drag & Drop Board -->
+            <section class="row g-3" id="kanbanBoard">
+                
+                <!-- Pending Column -->
+                <div class="col-12 col-md-4">
+                    <div class="card bg-light border-0 shadow-sm p-3 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold m-0 text-warning">
+                                <i class="bi bi-clock-history me-2"></i>Pending
+                            </h5>
+                            <span class="badge bg-warning text-dark rounded-pill" id="countPending">0</span>
+                        </div>
+                        <div class="drop-zone p-2 rounded flex-grow-1" id="Pending" data-status="Pending" style="min-height: 400px;">
+                            <!-- Task Cards Render Here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- In Progress Column -->
+                <div class="col-12 col-md-4">
+                    <div class="card bg-light border-0 shadow-sm p-3 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold m-0 text-primary">
+                                <i class="bi bi-arrow-repeat me-2"></i>In Progress
+                            </h5>
+                            <span class="badge bg-primary rounded-pill" id="countInProgress">0</span>
+                        </div>
+                        <div class="drop-zone p-2 rounded flex-grow-1" id="InProgress" data-status="In Progress" style="min-height: 400px;">
+                            <!-- Task Cards Render Here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completed Column -->
+                <div class="col-12 col-md-4">
+                    <div class="card bg-light border-0 shadow-sm p-3 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold m-0 text-success">
+                                <i class="bi bi-check-circle me-2"></i>Completed
+                            </h5>
+                            <span class="badge bg-success rounded-pill" id="countCompleted">0</span>
+                        </div>
+                        <div class="drop-zone p-2 rounded flex-grow-1" id="Completed" data-status="Completed" style="min-height: 400px;">
+                            <!-- Task Cards Render Here -->
+                        </div>
+                    </div>
+                </div>
+
             </section>
 
         </main>
@@ -243,7 +325,7 @@
     </div>
 </div>
 
-<!-- Bootstrap Bundle JS CDN (لضمان تشغيل عناصر التفاعل كالـ Offcanvas والـ Modal) -->
+<!-- Bootstrap Bundle JS CDN -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="script(M).js"></script>
 </body>

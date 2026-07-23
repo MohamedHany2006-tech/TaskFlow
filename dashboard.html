@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TaskFlow | Dashboard Overview</title>
 
-    <link rel="stylesheet" href="bootstrap.min.css">
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <link rel="stylesheet" href="style(D).css">
@@ -86,8 +87,8 @@
         <!-- Main Content Wrapper -->
         <main class="col-md-9 col-lg-10 ms-sm-auto px-md-4 py-3">
 
-            <!-- Header -->
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+            <!-- Header Section with Notifications & Actions -->
+            <header class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
 
                 <div>
                     <h2 class="fw-bold mb-1">
@@ -98,17 +99,52 @@
                     </p>
                 </div>
 
-                <a href="mytasks.html" class="btn btn-primary">
-                    <i class="bi bi-plus-lg me-1"></i> Manage Tasks
-                </a>
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Notification Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-light position-relative rounded-circle shadow-sm p-2 notif-btn" type="button" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+                            <i class="bi bi-bell fs-5 text-secondary"></i>
+                            <!-- Badge for unread notifications -->
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" id="notifBadge">
+                                0
+                            </span>
+                        </button>
 
-            </div>
+                        <!-- Dropdown Menu -->
+                        <div class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-0 notif-dropdown" aria-labelledby="notifDropdown">
+                            <!-- Notification Header -->
+                            <div class="dropdown-header d-flex justify-content-between align-items-center p-3 border-bottom bg-light rounded-top">
+                                <h6 class="m-0 fw-bold text-dark d-flex align-items-center gap-2">
+                                    <i class="bi bi-bell-fill text-primary"></i> Notifications
+                                </h6>
+                                <button class="btn btn-link btn-sm p-0 text-decoration-none text-muted extra-small hover-underline" onclick="clearNotifications()">
+                                    Clear All
+                                </button>
+                            </div>
+                            
+                            <!-- Notification Items List -->
+                            <ul class="list-unstyled mb-0 p-2" id="notifList" style="max-height: 320px; overflow-y: auto;">
+                                <li id="emptyNotifMsg" class="text-center py-4 text-muted small">
+                                    <i class="bi bi-inbox fs-3 d-block mb-1 text-black-50"></i>
+                                    No new notifications
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Manage Tasks Button -->
+                    <a href="mytasks.html" class="btn btn-primary">
+                        <i class="bi bi-plus-lg me-1"></i> Manage Tasks
+                    </a>
+                </div>
+
+            </header>
 
             <!-- Statistics Grid -->
             <div class="row g-3 mb-4">
 
                 <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="card p-3">
+                    <div class="card p-3 border-0 shadow-sm">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <small class="text-muted fw-semibold">TOTAL TASKS</small>
@@ -120,7 +156,7 @@
                 </div>
 
                 <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="card p-3">
+                    <div class="card p-3 border-0 shadow-sm">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <small class="text-muted fw-semibold">COMPLETED</small>
@@ -132,7 +168,7 @@
                 </div>
 
                 <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="card p-3">
+                    <div class="card p-3 border-0 shadow-sm">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <small class="text-muted fw-semibold">IN PROGRESS</small>
@@ -144,7 +180,7 @@
                 </div>
 
                 <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="card p-3">
+                    <div class="card p-3 border-0 shadow-sm">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <small class="text-muted fw-semibold">PENDING</small>
@@ -158,22 +194,22 @@
             </div>
 
             <!-- Progress Section -->
-            <div class="card p-3 p-md-4 mb-4">
+            <div class="card p-3 p-md-4 mb-4 border-0 shadow-sm">
                 <div class="d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 fw-bold">Overall Completion Rate</h5>
                     <span id="progressPercentage" class="fw-bold text-primary">0%</span>
                 </div>
 
                 <div class="progress mt-3" style="height:12px">
-                    <div id="progressBar" class="progress-bar" role="progressbar" style="width:0%"></div>
+                    <div id="progressBar" class="progress-bar bg-primary" role="progressbar" style="width:0%"></div>
                 </div>
             </div>
 
             <!-- Recent Tasks Table -->
-            <div class="card p-3 p-md-4">
+            <div class="card p-3 p-md-4 border-0 shadow-sm">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="mb-0 fw-bold">Recent Tasks</h5>
-                    <a href="mytasks.html" class="text-decoration-none">View All</a>
+                    <a href="mytasks.html" class="text-decoration-none fw-semibold">View All</a>
                 </div>
 
                 <div class="table-responsive">

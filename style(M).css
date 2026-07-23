@@ -1,92 +1,188 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-body{
-    background:#f8fafc;
-    font-family:'Segoe UI',sans-serif;
+body {
+    background: #f8fafc;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #1e293b;
 }
 
-.sidebar{
-    background:#111827;
-    min-height:100vh;
+/* ==========================================
+   Sidebar & Layout Styles
+========================================== */
+.sidebar {
+    background: #111827;
+    min-height: 100vh;
 }
 
-@media (min-width:768px){
-    .sidebar{
-        position:fixed;
-        width:250px;
+@media (min-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 250px;
+        z-index: 1000;
     }
 
-    .main-content{
-        margin-left:250px;
+    .main-content {
+        margin-left: 250px;
+        width: calc(100% - 250px);
     }
 }
 
-@media (max-width:767px){
-    .main-content{
-        margin-left:0;
+@media (max-width: 767px) {
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 15px;
     }
 }
 
-.main-content{
-    margin-left:260px;
-    width:calc(100% - 260px);
-    padding:30px;
+.main-content {
+    padding: 30px;
+    transition: all 0.3s ease;
 }
 
-.sidebar h3{
-
-    color:white;
-    margin-bottom:30px;
-
+.sidebar h3 {
+    color: #ffffff;
+    margin-bottom: 30px;
 }
 
-.sidebar .nav-link{
-
-    color:#cbd5e1;
-    padding:12px 15px;
-    border-radius:10px;
-    margin-bottom:8px;
-    transition:.3s;
-
+.sidebar .nav-link {
+    color: #cbd5e1;
+    padding: 12px 15px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
 }
 
 .sidebar .nav-link:hover,
-.sidebar .nav-link.active{
-
-    background:#4f46e5;
-    color:white;
-
+.sidebar .nav-link.active {
+    background: #4f46e5;
+    color: #ffffff;
 }
 
-.task-card{
-
-    border:none;
-    border-radius:18px;
-    transition:.3s;
-    box-shadow:0 5px 15px rgba(0,0,0,.08);
-
+/* ==========================================
+   Task Cards & Interactions
+========================================== */
+.task-card {
+    border: none;
+    border-radius: 16px;
+    background-color: #ffffff;
+    cursor: grab;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
-.task-card:hover{
-
-    transform:translateY(-6px);
-    box-shadow:0 15px 35px rgba(0,0,0,.12);
-
+.task-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.09);
 }
 
+.task-card:active {
+    cursor: grabbing;
+}
+
+.task-card.dragging {
+    opacity: 0.4;
+    transform: scale(0.98);
+}
+
+/* ==========================================
+   Drag & Drop Zones
+========================================== */
+.drop-zone {
+    min-height: 250px;
+    background-color: rgba(0, 0, 0, 0.02);
+    border: 2px dashed transparent;
+    border-radius: 12px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* التظليل عند تحريك العنصر فوق العمود */
+.drop-zone.drag-over {
+    background-color: rgba(79, 70, 229, 0.08);
+    border-color: #4f46e5;
+}
+
+/* ==========================================
+   Form Controls & Buttons
+========================================== */
 .form-control,
-.form-select{
-
-    height:45px;
-
+.form-select {
+    height: 45px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
 }
 
-.btn{
+.form-control:focus,
+.form-select:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
 
-    border-radius:12px;
+.btn {
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
 
+.btn-primary {
+    background-color: #4f46e5;
+    border-color: #4f46e5;
+}
+
+.btn-primary:hover {
+    background-color: #4338ca;
+    border-color: #4338ca;
+}
+/* ==========================================
+   Notifications Styling
+========================================== */
+.notif-btn {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.notif-btn:hover {
+    background-color: #e2e8f0;
+    transform: scale(1.05);
+}
+
+.notif-dropdown {
+    width: 320px;
+    border-radius: 14px !important;
+    overflow: hidden;
+}
+
+/* تخصيص شكل شريط التمرير (Scrollbar) داخل قائمة الإشعارات */
+#notifList::-webkit-scrollbar {
+    width: 5px;
+}
+
+#notifList::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 10px;
+}
+
+.notif-item {
+    transition: background-color 0.2s ease;
+    border-radius: 10px;
+}
+
+.notif-item:hover {
+    background-color: #f1f5f9 !important;
+}
+
+.extra-small {
+    font-size: 0.75rem;
 }

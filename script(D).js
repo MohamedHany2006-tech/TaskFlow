@@ -59,3 +59,23 @@ function loadDashboardData() {
         recentTasksContainer.insertAdjacentHTML('beforeend', rowHTML);
     });
 }
+// === فحص المواعيد لإشعار "Deadline Tomorrow" ===
+function checkDeadlines() {
+    const tasks = getTasks();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    tasks.forEach(task => {
+        if (task.status !== 'Completed' && task.date) {
+            const taskDate = new Date(task.date);
+            taskDate.setHours(0, 0, 0, 0);
+
+            const diffTime = taskDate - today;
+            const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 1) {
+                addNotification('Deadline Tomorrow', `Task "${task.title}" is due tomorrow!`);
+            }
+        }
+    });
+}

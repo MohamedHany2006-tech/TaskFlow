@@ -66,3 +66,47 @@ function logout() {
     localStorage.removeItem('currentUser');
     window.location.href = 'login.html';
 }
+// حساب نسبة الإنجاز
+const totalTasks = 10; // أو قراءتها من البيانات
+const completedTasks = 7;
+const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+// تحديث الواجهة
+document.getElementById('completionRateText').textContent = `${completionRate}%`;
+document.getElementById('completionProgressBar').style.width = `${completionRate}%`;
+document.getElementById('completionProgressBar').setAttribute('aria-valuenow', completionRate);
+document.addEventListener('DOMContentLoaded', () => {
+    const editAvatarInput = document.getElementById('editAvatarInput');
+    const profileImage = document.getElementById('profileImage');
+
+    // 1. استرجاع الصورة المحفوظة مسبقاً (إن وجدت)
+    const savedAvatar = localStorage.getItem('userAvatar');
+    if (savedAvatar) {
+        profileImage.src = savedAvatar;
+    }
+
+    // 2. تغيير الصورة فور اختيار ملف جديد
+    if (editAvatarInput) {
+        editAvatarInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                
+                // عند الانتهاء من قراءة الملف
+                reader.onload = function(event) {
+                    const imageBase64 = event.target.result;
+                    
+                    // تغيير مصدر الصورة في الصفحات لتظهر فوراً
+                    profileImage.src = imageBase64;
+                    
+                    // حفظ الصورة في LocalStorage لتظل موجودة حتى بعد إعادة تحميل الصفحة
+                    localStorage.setItem('userAvatar', imageBase64);
+                };
+                
+                // قراءة الصورة كـ Data URL
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+});

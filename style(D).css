@@ -206,3 +206,49 @@ body{
     }
 
 }
+
+/* ==========================================
+   Notifications Styling
+========================================== */
+.notif-btn {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.notif-btn:hover {
+    background-color: #e2e8f0;
+    transform: scale(1.05);
+}
+
+.notif-dropdown {
+    width: 320px;
+    border-radius: 14px !important;
+    overflow: hidden;
+}
+
+/* تخصيص شكل شريط التمرير (Scrollbar) داخل قائمة الإشعارات */
+#notifList::-webkit-scrollbar {
+    width: 5px;
+}
+
+#notifList::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 10px;
+}
+
+.notif-item {
+    transition: background-color 0.2s ease;
+    border-radius: 10px;
+}
+
+.notif-item:hover {
+    background-color: #f1f5f9 !important;
+}
+
+.extra-small {
+    font-size: 0.75rem;
+}
