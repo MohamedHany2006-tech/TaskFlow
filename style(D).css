@@ -252,3 +252,86 @@ body{
 .extra-small {
     font-size: 0.75rem;
 }
+/* ==========================================
+   Dashboard Dark Mode Complete Fix
+========================================== */
+[data-theme="dark"] body,
+body.dark-mode {
+    background-color: #0b0f17 !important;
+    color: #f8fafc !important;
+}
+
+/* 1. إصلاح عنوان الصفحة والعناوين الرئيسية */
+[data-theme="dark"] h2,
+[data-theme="dark"] h5,
+body.dark-mode h2,
+body.dark-mode h5 {
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .text-muted,
+body.dark-mode .text-muted {
+    color: #94a3b8 !important;
+}
+
+/* 2. إصلاح كروت الإحصائيات والشريط */
+[data-theme="dark"] .card,
+body.dark-mode .card {
+    background-color: #111827 !important;
+    border: 1px solid #1f2937 !important;
+    color: #ffffff !important;
+}
+
+/* 3. إصلاح الجدول (Recent Tasks Table Fix) */
+[data-theme="dark"] .table,
+body.dark-mode .table {
+    color: #f8fafc !important;
+    --bs-table-bg: transparent !important;
+    --bs-table-hover-bg: #1e293b !important;
+    border-color: #1f2937 !important;
+}
+
+[data-theme="dark"] .table th,
+[data-theme="dark"] .table td,
+body.dark-mode .table th,
+body.dark-mode .table td {
+    background-color: transparent !important;
+    color: #e2e8f0 !important;
+    border-color: #1f2937 !important;
+}
+
+/* 4. إصلاح شريط التقدم (Progress Bar) */
+[data-theme="dark"] .progress,
+body.dark-mode .progress {
+    background-color: #1e293b !important;
+}
+
+/* 5. إصلاح زر وقائمة الإشعارات */
+[data-theme="dark"] .notif-btn,
+body.dark-mode .notif-btn {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .notif-btn i,
+body.dark-mode .notif-btn i {
+    color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .notif-dropdown,
+body.dark-mode .notif-dropdown {
+    background-color: #111827 !important;
+    border: 1px solid #1f2937 !important;
+}
+
+[data-theme="dark"] .dropdown-header,
+body.dark-mode .dropdown-header {
+    background-color: #1e293b !important;
+    border-color: #1f2937 !important;
+}
+
+[data-theme="dark"] .notif-item:hover,
+body.dark-mode .notif-item:hover {
+    background-color: #1e293b !important;
+}
