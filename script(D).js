@@ -27,7 +27,7 @@ function loadDashboardData() {
     if (tasks.length === 0) {
         recentTasksContainer.innerHTML = `
             <tr>
-                <td colspan="5" class="text-center text-muted py-4">No tasks found. Add some tasks from the My Tasks page!</td>
+                <td colspan="5" class="text-center text-muted py-4">No tasks found. Add some tasks in the My Tasks page!</td>
             </tr>
         `;
         return;
