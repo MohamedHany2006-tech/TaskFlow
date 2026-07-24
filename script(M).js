@@ -34,8 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
             saveTask(newTask);
             loadAndRenderTasks();
 
-            // إرسال إشعار عند إضافة مهمة جديدة
+            // إرسال إشعار وتوست عند إضافة مهمة جديدة
             addNotification('New Task', `Task "${title}" has been created.`);
+            showToast('Task added successfully!', 'success');
 
             addTaskForm.reset();
             const modalElement = document.getElementById('addTaskModal');
@@ -76,6 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (oldStatus !== 'Completed' && status === 'Completed') {
                 addNotification('Task Completed', `Task "${title}" marked as completed.`);
             }
+
+            showToast('Task updated successfully!', 'info');
 
             const modalElement = document.getElementById('editTaskModal');
             const modalInstance = bootstrap.Modal.getInstance(modalElement);
@@ -151,11 +154,19 @@ function createTaskCardElement(task) {
     if (task.priority === 'Medium') priorityBadge = 'bg-warning text-dark';
     if (task.priority === 'Low') priorityBadge = 'bg-info text-dark';
 
+    // عدم إظهار زر الصح إذا كانت المهمة مكتملة بالفعل
+    const completeBtnHtml = task.status !== 'Completed' 
+        ? `<button class="btn btn-sm btn-link text-success p-0 me-2" onclick="markTaskAsCompleted('${task.id}')" title="Mark as Completed">
+            <i class="bi bi-check-lg fs-5"></i>
+           </button>` 
+        : '';
+
     card.innerHTML = `
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
-                <h6 class="fw-bold m-0 text-truncate" style="max-width: 75%;">${task.title}</h6>
-                <div class="d-flex gap-1">
+                <h6 class="fw-bold m-0 text-truncate ${task.status === 'Completed' ? 'text-decoration-line-through text-muted' : ''}" style="max-width: 65%;">${task.title}</h6>
+                <div class="d-flex align-items-center">
+                    ${completeBtnHtml}
                     <button class="btn btn-sm btn-link text-primary p-0 me-2" onclick="openEditModal('${task.id}')" title="Edit Task">
                         <i class="bi bi-pencil-square"></i>
                     </button>
@@ -257,7 +268,13 @@ function updateTaskStatusInStorage(taskId, newStatus) {
 
     if (newStatus === 'Completed') {
         addNotification('Task Completed', `Task "${taskTitle}" marked as completed.`);
+        showToast('🎉 Task completed successfully!', 'success');
     }
+}
+
+// === دالة إنهاء المهمة عند الضغط على زر الصح ✔ ===
+function markTaskAsCompleted(taskId) {
+    updateTaskStatusInStorage(taskId, 'Completed');
 }
 
 // === دالة حذف تاسك ===
@@ -267,6 +284,7 @@ function deleteTask(taskId) {
         tasks = tasks.filter(t => String(t.id) !== String(taskId));
         localStorage.setItem('tasks', JSON.stringify(tasks));
         loadAndRenderTasks();
+        showToast('Task deleted successfully!', 'danger');
     }
 }
 
@@ -284,7 +302,6 @@ function initFiltersAndSearch() {
 }
 
 // === إدارة الإشعارات (Notifications) ===
-
 function clearNotifications() {
     const notifBadge = document.getElementById('notifBadge');
     const notifList = document.getElementById('notifList');
@@ -295,16 +312,12 @@ function clearNotifications() {
     }
 
     if (notifList) {
-        const header = notifList.querySelector('.dropdown-header');
-        const headerLi = header ? header.closest('li') : null;
-        notifList.innerHTML = '';
-        if (headerLi) notifList.appendChild(headerLi);
-
-        const emptyMsg = document.createElement('li');
-        emptyMsg.id = 'emptyNotifMsg';
-        emptyMsg.className = 'text-center py-3 text-muted small';
-        emptyMsg.textContent = 'No new notifications';
-        notifList.appendChild(emptyMsg);
+        notifList.innerHTML = `
+            <li id="emptyNotifMsg" class="text-center py-4 text-muted small">
+                <i class="bi bi-inbox fs-3 d-block mb-1 text-black-50"></i>
+                No new notifications
+            </li>
+        `;
     }
 }
 
@@ -354,12 +367,7 @@ function addNotification(type, message) {
         </a>
     `;
 
-    const header = notifList.querySelector('.dropdown-header');
-    if (header && header.closest('li')) {
-        header.closest('li').after(notifItem);
-    } else {
-        notifList.appendChild(notifItem);
-    }
+    notifList.prepend(notifItem);
 }
 
 // === فحص المواعيد لإشعار "Deadline Tomorrow" ===
@@ -381,4 +389,32 @@ function checkDeadlines() {
             }
         }
     });
+}
+
+// === دالة إظهار الـ Toast Messages ===
+function showToast(message, type = 'success') {
+    const toastEl = document.getElementById('liveToast');
+    const toastMessage = document.getElementById('toastMessage');
+    const toastIcon = document.getElementById('toastIcon');
+
+    if (!toastEl || !toastMessage || !toastIcon) return;
+
+    // ضبط النص
+    toastMessage.textContent = message;
+
+    // تغيير ألوان وأيقونة التوست حسب النوع (success, danger, warning, info)
+    toastEl.className = `toast align-items-center text-white border-0 shadow-lg bg-${type}`;
+
+    if (type === 'success') {
+        toastIcon.className = 'bi bi-check-circle-fill fs-5';
+    } else if (type === 'danger') {
+        toastIcon.className = 'bi bi-x-circle-fill fs-5';
+    } else if (type === 'warning') {
+        toastIcon.className = 'bi bi-exclamation-triangle-fill fs-5';
+    } else {
+        toastIcon.className = 'bi bi-info-circle-fill fs-5';
+    }
+
+    const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+    toast.show();
 }

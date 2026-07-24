@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TaskFlow | Profile</title>
-    <link href="bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="style(M).css">
     <link rel="stylesheet" href="theme-toggle.css">
@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<!-- Mobile Navbar (Only visible on small screens) -->
+<!-- Mobile Navbar -->
 <nav class="navbar navbar-dark bg-dark d-md-none px-3 mb-3">
     <a class="navbar-brand fw-bold" href="#">
         <i class="bi bi-check2-square me-1"></i> TaskFlow
@@ -25,7 +25,7 @@
 <div class="container-fluid">
     <div class="row">
         
-        <!-- Sidebar Navigation (Desktop Static & Mobile Offcanvas) -->
+        <!-- Sidebar Navigation -->
         <aside class="col-md-3 col-lg-2 offcanvas-md offcanvas-start bg-dark text-white p-3 min-vh-100 d-flex flex-column justify-content-between" id="mobileSidebar" tabindex="-1">
             <div class="w-100">
                 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -52,6 +52,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link text-white-50" href="calender.html">
+                            <i class="bi bi-card-checklist"></i> Calendar
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link text-white-50" href="settings.html">
                             <i class="bi bi-gear me-2"></i> Settings
                         </a>
@@ -59,7 +64,7 @@
                 </ul>
             </div>
 
-            <!-- Logout Link in Bottom -->
+            <!-- Logout Link -->
             <ul class="nav flex-column mt-auto pt-3 border-top border-secondary w-100">
                 <li class="nav-item">
                     <a class="nav-link text-danger" href="index.html">
@@ -69,10 +74,9 @@
             </ul>
         </aside>
 
-        <!-- Main Content Wrapper -->
+        <!-- Main Content -->
         <main class="col-md-9 col-lg-10 ms-sm-auto px-md-4 py-3">
             
-            <!-- Header Section -->
             <header class="mb-4">
                 <h2 class="fw-bold m-0">Profile Settings</h2>
                 <p class="text-muted m-0">Manage your profile information and account details.</p>
@@ -80,16 +84,23 @@
 
             <div class="row g-4">
                 
-                <!-- Left Column: User Summary Card -->
+                <!-- Left Column: Summary Card -->
                 <div class="col-12 col-lg-4">
                     <div class="card border-0 shadow-sm text-center p-4">
                         
-                        <!-- Avatar Section with Image Upload Overlay -->
+                        <!-- Avatar Section مع زر الحذف -->
                         <div class="position-relative d-inline-block mx-auto mb-3">
                             <img id="profileImage" src="https://via.placeholder.com/100" class="rounded-circle object-fit-cover shadow-sm" width="100" height="100" alt="Profile Picture">
+                            
+                            <!-- زر التغيير -->
                             <label for="editAvatarInput" class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-2 shadow-sm cursor-pointer" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;" title="Change Photo">
                                 <i class="bi bi-camera-fill small"></i>
                             </label>
+
+                            <!-- زر الحذف -->
+                            <button type="button" id="removeAvatarBtn" class="position-absolute top-0 end-0 bg-danger text-white border-0 rounded-circle p-1 shadow-sm d-none" style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;" title="Remove Photo">
+                                <i class="bi bi-x-lg extra-small"></i>
+                            </button>
                         </div>
 
                         <h4 class="fw-bold mb-1" id="profileDisplayName">User Name</h4>
@@ -97,7 +108,7 @@
                         
                         <hr>
 
-                        <!-- Quick Task Stats -->
+                        <!-- Task Stats -->
                         <div class="row text-center pt-2 mb-3">
                             <div class="col-4 border-end px-1">
                                 <h5 class="fw-bold m-0" id="userTotalTasks">0</h5>
@@ -126,24 +137,21 @@
 
                     </div>
                 </div>
-                
 
-                <!-- Right Column: Edit Profile Form -->
+                <!-- Right Column: Form -->
                 <div class="col-12 col-lg-8">
                     <div class="card border-0 shadow-sm p-4">
                         <h5 class="fw-bold mb-3"><i class="bi bi-person-gear me-2"></i> Edit Profile Information</h5>
                         
-                        <!-- Alert Message -->
                         <div id="profileAlert" class="alert d-none" role="alert"></div>
 
                         <form id="profileForm">
-                            
-                            <!-- Profile Picture Input -->
                             <div class="mb-3">
                                 <label for="editAvatarInput" class="form-label fw-bold">Profile Picture</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-image"></i></span>
                                     <input type="file" class="form-control" id="editAvatarInput" accept="image/*">
+                                    <button class="btn btn-outline-danger d-none" type="button" id="removeAvatarBtnInput"><i class="bi bi-trash"></i> Remove</button>
                                 </div>
                             </div>
 
@@ -188,7 +196,6 @@
     </div>
 </div>
 
-<!-- Bootstrap Bundle JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="script(P).js"></script>
 </body>

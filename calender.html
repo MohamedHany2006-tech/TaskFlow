@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow | Calendar</title>
+    <!-- Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- FullCalendar CSS -->
+    <link rel="stylesheet" href="skeleton.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style(C).css">
+    <link rel="stylesheet" href="theme-toggle.css">
+</head>
+<body>
+    <!-- Mobile Navbar (Only visible on small screens) -->
+    <nav class="navbar navbar-dark bg-dark d-md-none px-3 mb-3">
+        <a class="navbar-brand fw-bold" href="#">
+            <i class="bi bi-check2-square me-1"></i> TaskFlow
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- Sidebar Navigation -->
+            <aside class="col-md-3 col-lg-2 offcanvas-md offcanvas-start bg-dark text-white p-3 min-vh-100 d-flex flex-column justify-content-between" id="mobileSidebar" tabindex="-1">
+                <div class="w-100">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="text-white m-0">
+                            <i class="bi bi-check2-square"></i> TaskFlow
+                        </h3>
+                        <button type="button" class="btn-close btn-close-white d-md-none" data-bs-dismiss="offcanvas" data-bs-target="#mobileSidebar" aria-label="Close"></button>
+                    </div>
+
+                    <ul class="nav flex-column gap-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50" href="dashboard.html">
+                                <i class="bi bi-grid me-2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50" href="mytasks.html">
+                                <i class="bi bi-list-task me-2"></i> My Tasks
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50" href="profile.html">
+                                <i class="bi bi-person me-2"></i> Profile
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active text-white fw-bold" href="#">
+                                <i class="bi bi-calendar3 me-2"></i> Calendar
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50" href="settings.html">
+                                <i class="bi bi-gear me-2"></i> Settings
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Logout Link -->
+                <ul class="nav flex-column mt-auto pt-3 border-top border-secondary w-100">
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="index.html">
+                            <i class="bi bi-box-arrow-right me-2"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </aside>
+
+            <!-- Main Content Wrapper -->
+            <main class="col-md-9 col-lg-10 ms-sm-auto px-md-4 py-3">
+
+                <!-- Header Section -->
+                <header class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                    <div>
+                        <h2 class="fw-bold mb-1">Calendar Overview</h2>
+                        <p class="text-muted m-0">Manage your task deadlines and schedule visually.</p>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Notification Dropdown -->
+                        <div class="dropdown">
+                            <button class="btn btn-light position-relative rounded-circle shadow-sm p-2 notif-btn" type="button" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+                                <i class="bi bi-bell fs-5 text-secondary"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" id="notifBadge">0</span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end shadow border-0 p-2 notif-dropdown" aria-labelledby="notifDropdown">
+                                <h6 class="dropdown-header fw-bold">Notifications</h6>
+                                <div id="notifList" class="my-2" style="max-height: 250px; overflow-y: auto;">
+                                    <p class="text-muted small text-center m-0 py-2">No new notifications</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Theme Toggle Button -->
+                        <button class="btn btn-light rounded-circle shadow-sm p-2 notif-btn" id="themeToggleBtn" title="Toggle Theme">
+                            <i class="bi bi-moon-stars fs-5 text-secondary" id="themeIcon"></i>
+                        </button>
+                    </div>
+                </header>
+
+                <!-- Calendar Card View -->
+                <div class="row">
+                    <div class="col-12">
+                        <div id="calendar"></div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (With Bundle for Dropdowns & Offcanvas) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+    
+    <!-- Script to Render Calendar & Fetch Local Tasks -->
+    <script src="script(C).js"></script>
+</body>
+</html>

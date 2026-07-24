@@ -13,6 +13,19 @@
 </head>
 <body>
 
+<!-- Toast Notification Container (أسفل اليمين) -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
+    <div id="liveToast" class="toast align-items-center text-white bg-success border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body d-flex align-items-center gap-2">
+                <i class="bi bi-check-circle-fill fs-5" id="toastIcon"></i>
+                <span id="toastMessage">Task updated successfully!</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 <!-- Mobile Navbar (Visible on small screens) -->
 <nav class="navbar navbar-dark bg-dark d-md-none px-3 mb-3">
     <a class="navbar-brand fw-bold" href="#">
@@ -53,6 +66,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link text-white-50" href="calender.html">
+                            <i class="bi bi-card-checklist"></i> Calendar
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link text-white-50" href="settings.html">
                             <i class="bi bi-gear me-2"></i> Settings
                         </a>
@@ -79,36 +97,30 @@
                 
                 <div class="d-flex align-items-center gap-3">
                     <!-- Notification Dropdown -->
-<div class="dropdown me-2">
-    <button class="btn btn-light position-relative rounded-circle shadow-sm p-2 notif-btn" type="button" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
-        <i class="bi bi-bell fs-5 text-secondary"></i>
-        <!-- Badge for unread notifications -->
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" id="notifBadge">
-            0
-        </span>
-    </button>
+                    <div class="dropdown me-2">
+                        <button class="btn btn-light position-relative rounded-circle shadow-sm p-2 notif-btn" type="button" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+                            <i class="bi bi-bell fs-5 text-secondary"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" id="notifBadge">0</span>
+                        </button>
 
-    <!-- Dropdown Menu -->
-    <div class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-0 notif-dropdown" aria-labelledby="notifDropdown">
-        <!-- Notification Header -->
-        <div class="dropdown-header d-flex justify-content-between align-items-center p-3 border-bottom bg-light rounded-top">
-            <h6 class="m-0 fw-bold text-dark d-flex align-items-center gap-2">
-                <i class="bi bi-bell-fill text-primary"></i> Notifications
-            </h6>
-            <button class="btn btn-link btn-sm p-0 text-decoration-none text-muted extra-small hover-underline" onclick="clearNotifications()">
-                Clear All
-            </button>
-        </div>
-        
-        <!-- Notification Items List -->
-        <ul class="list-unstyled mb-0 p-2" id="notifList" style="max-height: 320px; overflow-y: auto;">
-            <li id="emptyNotifMsg" class="text-center py-4 text-muted small">
-                <i class="bi bi-inbox fs-3 d-block mb-1 text-black-50"></i>
-                No new notifications
-            </li>
-        </ul>
-    </div>
-</div>
+                        <div class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-0 notif-dropdown" aria-labelledby="notifDropdown">
+                            <div class="dropdown-header d-flex justify-content-between align-items-center p-3 border-bottom bg-light rounded-top">
+                                <h6 class="m-0 fw-bold text-dark d-flex align-items-center gap-2">
+                                    <i class="bi bi-bell-fill text-primary"></i> Notifications
+                                </h6>
+                                <button class="btn btn-link btn-sm p-0 text-decoration-none text-muted extra-small hover-underline" onclick="clearNotifications()">
+                                    Clear All
+                                </button>
+                            </div>
+                            
+                            <ul class="list-unstyled mb-0 p-2" id="notifList" style="max-height: 320px; overflow-y: auto;">
+                                <li id="emptyNotifMsg" class="text-center py-4 text-muted small">
+                                    <i class="bi bi-inbox fs-3 d-block mb-1 text-black-50"></i>
+                                    No new notifications
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
 
                     <!-- Add Task Button -->
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
@@ -169,7 +181,7 @@
                             <span class="badge bg-warning text-dark rounded-pill" id="countPending">0</span>
                         </div>
                         <div class="drop-zone p-2 rounded flex-grow-1" id="Pending" data-status="Pending" style="min-height: 400px;">
-                            <!-- Task Cards Render Here -->
+                            <!-- Task Cards Render Here Dynamically -->
                         </div>
                     </div>
                 </div>
@@ -184,7 +196,7 @@
                             <span class="badge bg-primary rounded-pill" id="countInProgress">0</span>
                         </div>
                         <div class="drop-zone p-2 rounded flex-grow-1" id="InProgress" data-status="In Progress" style="min-height: 400px;">
-                            <!-- Task Cards Render Here -->
+                            <!-- Task Cards Render Here Dynamically -->
                         </div>
                     </div>
                 </div>
@@ -199,7 +211,7 @@
                             <span class="badge bg-success rounded-pill" id="countCompleted">0</span>
                         </div>
                         <div class="drop-zone p-2 rounded flex-grow-1" id="Completed" data-status="Completed" style="min-height: 400px;">
-                            <!-- Task Cards Render Here -->
+                            <!-- Task Cards Render Here Dynamically -->
                         </div>
                     </div>
                 </div>
