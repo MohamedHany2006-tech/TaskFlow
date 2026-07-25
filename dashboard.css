@@ -1,214 +1,171 @@
-/* ===========================
-   General
-=========================== */
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+/* ==========================================
+   1. Root Variables & Global Reset
+========================================== */
+:root {
+    --bg-body: #f8fafc;
+    --card-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --primary-color: #4f46e5;
+    --primary-hover: #4338ca;
 }
 
-body{
-    background:#f8fafc;
-    font-family:'Segoe UI',sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-
-/* ===========================
-   Sidebar
-=========================== */
-
-.sidebar{
-
-    position:fixed;
-    top:0;
-    left:0;
-
-    width:250px;
-    height:100vh;
-
-    background:#111827;
-
-    padding:20px;
-    overflow-y:auto;
-
-}
-
-.sidebar h3{
-
-    color:white;
-    margin-bottom:30px;
-
-}
-
-.sidebar .nav-link{
-
-    color:#cbd5e1;
-    padding:12px 15px;
-    border-radius:10px;
-    margin-bottom:8px;
-    transition:.3s;
-
-}
-
-.sidebar .nav-link:hover,
-.sidebar .nav-link.active{
-
-    background:#4f46e5;
-    color:white;
-
-}
-
-
-/* ===========================
-   Main Content
-=========================== */
-
-.main-content{
-
-    margin-left:250px;
-    padding:30px;
-
-}
-
-
-/* ===========================
-   Search & Select
-=========================== */
-
-.form-control,
-.form-select{
-
-    height:48px;
-    border-radius:12px;
-
-}
-
-.input-group-text{
-
-    border-radius:12px 0 0 12px;
-
-}
-
-
-/* ===========================
-   Buttons
-=========================== */
-
-.btn{
-
-    border-radius:12px;
-
-}
-
-.btn-primary{
-
-    background:#4f46e5;
-    border:none;
-
-}
-
-.btn-primary:hover{
-
-    background:#4338ca;
-
-}
-
-
-/* ===========================
-   Cards
-=========================== */
-
-.card{
-
-    border:none;
-    border-radius:18px;
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
-
-}
-
-.task-card{
-
-    transition:.3s;
-
-}
-
-.task-card:hover{
-
-    transform:translateY(-8px);
-    box-shadow:0 15px 35px rgba(0,0,0,.12);
-
-}
-
-
-/* ===========================
-   Badges
-=========================== */
-
-.badge{
-
-    font-size:14px;
-    padding:8px 12px;
-    border-radius:10px;
-
-}
-
-
-/* ===========================
-   Task Buttons
-=========================== */
-
-.task-card .btn{
-
-    width:40px;
-    height:40px;
-    border-radius:50%;
-
-}
-
-
-/* ===========================
-   Responsive
-=========================== */
-
-@media(max-width:992px){
-
-    .sidebar{
-
-        width:220px;
-
-    }
-
-    .main-content{
-
-        margin-left:220px;
-
-    }
-
-}
-
-
-@media(max-width:768px){
-
-    .sidebar{
-
-        position:relative;
-        width:100%;
-        height:auto;
-
-    }
-
-    .main-content{
-
-        margin-left:0;
-        padding:20px;
-
-    }
-
+body {
+    background-color: var(--bg-body) !important;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--text-main);
 }
 
 /* ==========================================
-   Notifications Styling
+   2. Sidebar & Layout (Identical to Calendar)
+========================================== */
+.sidebar {
+    background: #111827;
+    min-height: 100vh;
+}
+
+.sidebar h3 {
+    color: #ffffff;
+    margin-bottom: 30px;
+}
+
+.sidebar .nav-link {
+    color: #cbd5e1;
+    padding: 12px 15px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    background: var(--primary-color);
+    color: #ffffff;
+}
+
+.main-content {
+    padding: 30px;
+    transition: all 0.3s ease;
+}
+
+/* الشاشات الكبيرة (Desktop) */
+@media (min-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 250px;
+        z-index: 1000;
+    }
+
+    .main-content {
+        margin-left: 250px;
+        width: calc(100% - 250px);
+    }
+}
+
+/* الشاشات الصغيرة (Mobile & Tablets) */
+@media (max-width: 767px) {
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 15px;
+    }
+
+    .notif-dropdown {
+        width: 280px !important;
+    }
+
+    .card {
+        margin-bottom: 15px;
+    }
+}
+
+/* ==========================================
+   3. Forms, Inputs & Buttons
+========================================== */
+.form-control,
+.form-select {
+    height: 48px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+.input-group-text {
+    border-radius: 12px 0 0 12px;
+    background-color: #e2e8f0;
+    border-color: var(--border-color);
+}
+
+.btn {
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+}
+
+/* ==========================================
+   4. Cards & Task Badges
+========================================== */
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+}
+
+.task-card {
+    transition: all 0.3s ease;
+}
+
+.task-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.09);
+}
+
+.badge {
+    font-size: 0.85rem;
+    padding: 8px 12px;
+    border-radius: 10px;
+}
+
+.task-card .btn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+/* ==========================================
+   5. Notifications Styling
 ========================================== */
 .notif-btn {
     width: 42px;
@@ -230,7 +187,6 @@ body{
     overflow: hidden;
 }
 
-/* تخصيص شكل شريط التمرير (Scrollbar) داخل قائمة الإشعارات */
 #notifList::-webkit-scrollbar {
     width: 5px;
 }
@@ -252,8 +208,9 @@ body{
 .extra-small {
     font-size: 0.75rem;
 }
+
 /* ==========================================
-   Dashboard Dark Mode Complete Fix
+   6. Dashboard Dark Mode Fixes
 ========================================== */
 [data-theme="dark"] body,
 body.dark-mode {
@@ -261,7 +218,6 @@ body.dark-mode {
     color: #f8fafc !important;
 }
 
-/* 1. إصلاح عنوان الصفحة والعناوين الرئيسية */
 [data-theme="dark"] h2,
 [data-theme="dark"] h5,
 body.dark-mode h2,
@@ -274,7 +230,6 @@ body.dark-mode .text-muted {
     color: #94a3b8 !important;
 }
 
-/* 2. إصلاح كروت الإحصائيات والشريط */
 [data-theme="dark"] .card,
 body.dark-mode .card {
     background-color: #111827 !important;
@@ -282,7 +237,7 @@ body.dark-mode .card {
     color: #ffffff !important;
 }
 
-/* 3. إصلاح الجدول (Recent Tasks Table Fix) */
+/* Dark Mode Tables */
 [data-theme="dark"] .table,
 body.dark-mode .table {
     color: #f8fafc !important;
@@ -300,13 +255,12 @@ body.dark-mode .table td {
     border-color: #1f2937 !important;
 }
 
-/* 4. إصلاح شريط التقدم (Progress Bar) */
 [data-theme="dark"] .progress,
 body.dark-mode .progress {
     background-color: #1e293b !important;
 }
 
-/* 5. إصلاح زر وقائمة الإشعارات */
+/* Dark Mode Notifications */
 [data-theme="dark"] .notif-btn,
 body.dark-mode .notif-btn {
     background-color: #1e293b !important;

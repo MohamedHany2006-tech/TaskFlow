@@ -4,10 +4,24 @@
     box-sizing: border-box;
 }
 
+/* ==========================================
+   CSS Variables & Base Setup
+========================================== */
+:root {
+    --bg-body: #f1f5f9;            /* خلفية الصفحة الأساسية */
+    --card-bg: #ffffff;            /* خلفية الكروت والأعمدة */
+    --drop-zone-bg: #f8fafc;       /* خلفية منطقة وضع التاسكات */
+    --text-main: #0f172a;          /* لون النص الرئيسي */
+    --text-muted: #64748b;         /* لون النص الفرعي */
+    --border-color: #e2e8f0;       /* ألوان الحدود الناعمة */
+    --primary-color: #4f46e5;      /* البنفسجي الأساسي */
+    --primary-hover: #4338ca;
+}
+
 body {
-    background: #f8fafc;
+    background-color: var(--bg-body) !important;
+    color: var(--text-main);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #1e293b;
 }
 
 /* ==========================================
@@ -62,25 +76,91 @@ body {
 
 .sidebar .nav-link:hover,
 .sidebar .nav-link.active {
-    background: #4f46e5;
+    background: var(--primary-color);
     color: #ffffff;
+}
+
+/* ==========================================
+   Form Controls & Search Inputs
+========================================== */
+.form-control,
+.form-select {
+    background-color: var(--card-bg);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    height: 45px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+.input-group-text {
+    background-color: #e2e8f0;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+}
+
+.btn {
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+/* ==========================================
+   Kanban Column Cards & Drop Zones
+========================================== */
+#kanbanBoard .card {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+}
+
+.drop-zone {
+    min-height: 380px;
+    background-color: var(--drop-zone-bg);
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 10px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.drop-zone.drag-over {
+    background-color: rgba(79, 70, 229, 0.06);
+    border-color: var(--primary-color);
 }
 
 /* ==========================================
    Task Cards & Interactions
 ========================================== */
 .task-card {
-    border: none;
-    border-radius: 16px;
-    background-color: #ffffff;
+    background-color: #ffffff !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px;
     cursor: grab;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
 .task-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.09);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08) !important;
 }
 
 .task-card:active {
@@ -93,53 +173,21 @@ body {
 }
 
 /* ==========================================
-   Drag & Drop Zones
+   Badges & Counters
 ========================================== */
-.drop-zone {
-    min-height: 250px;
-    background-color: rgba(0, 0, 0, 0.02);
-    border: 2px dashed transparent;
-    border-radius: 12px;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
+.badge.bg-warning {
+    background-color: #fef3c7 !important;
+    color: #b45309 !important;
 }
 
-/* التظليل عند تحريك العنصر فوق العمود */
-.drop-zone.drag-over {
-    background-color: rgba(79, 70, 229, 0.08);
-    border-color: #4f46e5;
+.badge.bg-primary {
+    background-color: #e0e7ff !important;
+    color: #4338ca !important;
 }
 
-/* ==========================================
-   Form Controls & Buttons
-========================================== */
-.form-control,
-.form-select {
-    height: 45px;
-    border-radius: 10px;
-    border: 1px solid #e2e8f0;
-}
-
-.form-control:focus,
-.form-select:focus {
-    border-color: #4f46e5;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
-}
-
-.btn {
-    border-radius: 12px;
-    padding: 10px 20px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.btn-primary {
-    background-color: #4f46e5;
-    border-color: #4f46e5;
-}
-
-.btn-primary:hover {
-    background-color: #4338ca;
-    border-color: #4338ca;
+.badge.bg-success {
+    background-color: #dcfce7 !important;
+    color: #15803d !important;
 }
 
 /* ==========================================
@@ -165,7 +213,6 @@ body {
     overflow: hidden;
 }
 
-/* تخصيص شكل شريط التمرير (Scrollbar) داخل قائمة الإشعارات */
 #notifList::-webkit-scrollbar {
     width: 5px;
 }
@@ -187,8 +234,52 @@ body {
 .extra-small {
     font-size: 0.75rem;
 }
+
 /* ==========================================
-   Complete & Fixed Dark Mode Setup
+   Pagination Styling
+========================================== */
+#paginationWrapper {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 12px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.pagination .page-link {
+    color: var(--text-main);
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 8px !important;
+    margin: 0 3px;
+    padding: 6px 14px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.pagination .page-link:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #ffffff !important;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: var(--text-muted);
+    opacity: 0.5;
+    background-color: transparent;
+    border-color: var(--border-color);
+}
+
+#pageIndicator .page-link {
+    background-color: rgba(79, 70, 229, 0.08);
+    border-color: transparent;
+    color: var(--primary-color) !important;
+    pointer-events: none;
+}
+
+/* ==========================================
+   Dark Mode Setup
 ========================================== */
 [data-theme="dark"] body,
 body.dark-mode {
@@ -196,13 +287,11 @@ body.dark-mode {
     color: #f8fafc !important;
 }
 
-/* 1. العنوان الرئيسي */
 [data-theme="dark"] h2,
 body.dark-mode h2 {
     color: #ffffff !important;
 }
 
-/* 2. حقول البحث والفلاتر */
 [data-theme="dark"] .form-control,
 [data-theme="dark"] .form-select,
 [data-theme="dark"] .input-group-text,
@@ -214,21 +303,18 @@ body.dark-mode .input-group-text {
     color: #f8fafc !important;
 }
 
-/* 3. العمود الرئيسي لـ Kanban */
 [data-theme="dark"] #kanbanBoard .card,
 body.dark-mode #kanbanBoard .card {
-    background-color: #111827 !important; /* لون العمود داكن احترافي */
+    background-color: #111827 !important;
     border: 1px solid #1f2937 !important;
 }
 
-/* 4. حل مشكلة المساحة البيضاء (The White Drop Zone Fix) */
 [data-theme="dark"] .drop-zone,
 body.dark-mode .drop-zone {
-    background-color: #1e293b !important; /* تحويل المساحة البيضاء الفاقعة إلى رمادي غامق مريح */
+    background-color: #1e293b !important;
     border: 1px dashed #334155 !important;
 }
 
-/* 5. كروت التاسكات نفسها لما تتضاف جوه العمود */
 [data-theme="dark"] .task-card,
 body.dark-mode .task-card {
     background-color: #0f172a !important;
@@ -246,7 +332,6 @@ body.dark-mode .task-card p {
     color: #94a3b8 !important;
 }
 
-/* 6. تعديل زِر الإشعارات والـ Modals */
 [data-theme="dark"] .notif-btn,
 body.dark-mode .notif-btn {
     background-color: #1e293b !important;
@@ -266,108 +351,23 @@ body.dark-mode .modal-content {
 body.dark-mode .modal-header,
 body.dark-mode .modal-footer {
     border-color: #1f2937 !important;
-}/* ==========================================
-   Soft & Eye-Friendly Light Mode Colors
-========================================== */
-:root {
-    --bg-body: #f1f5f9;            /* خلفية الصفحة الأساسية (رمادي ناعم مريح) */
-    --card-bg: #ffffff;            /* خلفية الكروت والأعمدة الرئيسية */
-    --drop-zone-bg: #f8fafc;       /* خلفية منطقة وضع التاسكات لتخفيف السطوع */
-    --text-main: #0f172a;          /* لون النص الرئيسي الداكن */
-    --text-muted: #64748b;         /* لون النص الفرعي */
-    --border-color: #e2e8f0;       /* ألوان الحدود الناعمة */
-    --primary-color: #4f46e5;      /* البنفسجي الأساسي */
-    --primary-hover: #4338ca;
 }
 
-body {
-    background-color: var(--bg-body) !important;
-    color: var(--text-main);
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+/* Dark mode for Pagination */
+[data-theme="dark"] #paginationWrapper,
+body.dark-mode #paginationWrapper {
+    background-color: #111827 !important;
+    border-color: #1f2937 !important;
 }
 
-/* ==========================================
-   Header & Search Inputs
-========================================== */
-.form-control,
-.form-select {
-    background-color: var(--card-bg);
-    color: var(--text-main);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    height: 45px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+[data-theme="dark"] .pagination .page-link,
+body.dark-mode .pagination .page-link {
+    color: #cbd5e1;
+    border-color: #334155;
 }
 
-.form-control:focus,
-.form-select:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
-}
-
-.input-group-text {
-    background-color: #e2e8f0;
-    border: 1px solid var(--border-color);
-    color: var(--text-muted);
-}
-
-/* ==========================================
-   Kanban Column Cards & Drop Zones
-========================================== */
-/* الكروت الكبيرة للأعمدة */
-#kanbanBoard .card {
-    background-color: var(--card-bg) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
-}
-
-/* منطقة الإسقاط داخل العمود لتخفيف السطوع الأبيض */
-.drop-zone {
-    min-height: 380px;
-    background-color: var(--drop-zone-bg);
-    border: 1px dashed #cbd5e1;
-    border-radius: 12px;
-    padding: 10px;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-/* تأثير تحريك الكارت فوق العمود */
-.drop-zone.drag-over {
-    background-color: rgba(79, 70, 229, 0.06);
-    border-color: var(--primary-color);
-}
-
-/* ==========================================
-   Task Cards (الكروت التي تظهر داخل الأعمدة)
-========================================== */
-.task-card {
-    background-color: #ffffff !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.task-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08) !important;
-}
-
-/* ==========================================
-   Badges & Counters
-========================================== */
-.badge.bg-warning {
-    background-color: #fef3c7 !important;
-    color: #b45309 !important;
-}
-
-.badge.bg-primary {
-    background-color: #e0e7ff !important;
-    color: #4338ca !important;
-}
-
-.badge.bg-success {
-    background-color: #dcfce7 !important;
-    color: #15803d !important;
+[data-theme="dark"] #pageIndicator .page-link,
+body.dark-mode #pageIndicator .page-link {
+    background-color: rgba(79, 70, 229, 0.2);
+    color: #818cf8 !important;
 }

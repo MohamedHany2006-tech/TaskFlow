@@ -51,3 +51,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 themeIcon.classList.replace('text-warning', 'text-secondary');
             }
         }
+        window.addEventListener('resize', function() {
+    if (calendar) {
+        calendar.updateSize();
+    }
+});

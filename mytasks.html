@@ -61,7 +61,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white-50" href="calender.html">
+                        <a class="nav-link text-white-50" href="calendar.html">
                             <i class="bi bi-card-checklist"></i> Calendar
                         </a>
                     </li>
@@ -96,32 +96,59 @@
                 <h2 class="fw-bold m-0">My Tasks</h2>
                 
                 <div class="d-flex align-items-center gap-3">
-                    <!-- Notification Dropdown -->
-                    <div class="dropdown me-2">
-                        <button class="btn btn-light position-relative rounded-circle shadow-sm p-2 notif-btn" type="button" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
-                            <i class="bi bi-bell fs-5 text-secondary"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" id="notifBadge">0</span>
-                        </button>
-
-                        <div class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-0 notif-dropdown" aria-labelledby="notifDropdown">
-                            <div class="dropdown-header d-flex justify-content-between align-items-center p-3 border-bottom bg-light rounded-top">
-                                <h6 class="m-0 fw-bold text-dark d-flex align-items-center gap-2">
-                                    <i class="bi bi-bell-fill text-primary"></i> Notifications
-                                </h6>
-                                <button class="btn btn-link btn-sm p-0 text-decoration-none text-muted extra-small hover-underline" onclick="clearNotifications()">
-                                    Clear All
-                                </button>
-                            </div>
-                            
-                            <ul class="list-unstyled mb-0 p-2" id="notifList" style="max-height: 320px; overflow-y: auto;">
-                                <li id="emptyNotifMsg" class="text-center py-4 text-muted small">
-                                    <i class="bi bi-inbox fs-3 d-block mb-1 text-black-50"></i>
-                                    No new notifications
-                                </li>
-                            </ul>
-                        </div>
+                    <!-- Notification Dropdown Container -->
+<div class="dropdown me-3">
+    <button class="btn btn-light position-relative rounded-circle notif-btn shadow-sm" type="button" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-bell fs-5"></i>
+        <!-- Badge for unread count -->
+        <span id="notifBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
+            3
+        </span>
+    </button>
+    
+    <ul class="dropdown-menu dropdown-menu-end shadow-lg p-2 notif-dropdown" aria-labelledby="notifDropdown">
+        <li class="dropdown-header d-flex justify-content-between align-items-center pb-2 border-bottom">
+            <span class="fw-bold text-dark">Notifications</span>
+            <button class="btn btn-link btn-sm p-0 text-decoration-none extra-small" onclick="clearNotifications()">Clear All</button>
+        </li>
+        <div id="notifList" class="my-2" style="max-height: 280px; overflow-y: auto;">
+            <!-- Example Notifications -->
+            <li>
+                <a class="dropdown-item p-2 rounded my-1 d-flex align-items-start gap-2 notif-item" href="#">
+                    <div class="bg-primary text-white rounded-circle p-2 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
+                        <i class="bi bi-plus-lg"></i>
                     </div>
-
+                    <div>
+                        <div class="fw-bold small">New Task</div>
+                        <div class="text-muted extra-small">Task "Design Landing Page" was created.</div>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item p-2 rounded my-1 d-flex align-items-start gap-2 notif-item" href="#">
+                    <div class="bg-warning text-dark rounded-circle p-2 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold small">Deadline Tomorrow</div>
+                        <div class="text-muted extra-small">Task "Fix Bugs" is due tomorrow!</div>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item p-2 rounded my-1 d-flex align-items-start gap-2 notif-item" href="#">
+                    <div class="bg-success text-white rounded-circle p-2 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
+                        <i class="bi bi-check-lg"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold small">Task Completed</div>
+                        <div class="text-muted extra-small">Task "Setup Database" marked as done.</div>
+                    </div>
+                </a>
+            </li>
+        </div>
+    </ul>
+</div>
                     <!-- Add Task Button -->
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
                         <i class="bi bi-plus-lg me-1"></i> Add Task
@@ -217,7 +244,25 @@
                 </div>
 
             </section>
-
+            <!-- Pagination Section -->
+        <div class="d-flex justify-content-between align-items-center mt-4 px-2" id="paginationWrapper">
+            <div class="text-muted small">
+                Showing <span id="pageStart">0</span> - <span id="pageEnd">0</span> of <span id="totalItems">0</span> tasks
+            </div>
+            <nav aria-label="Tasks pagination">
+                <ul class="pagination mb-0" id="paginationControls">
+                    <li class="page-item disabled" id="prevPageBtn">
+                        <button class="page-link" onclick="changePage(-1)">Previous</button>
+                    </li>
+                    <li class="page-item" id="pageIndicator">
+                        <span class="page-link text-dark fw-bold" id="currentPageNumber">Page 1</span>
+                    </li>
+                    <li class="page-item" id="nextPageBtn">
+                        <button class="page-link" onclick="changePage(1)">Next</button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
         </main>
     </div>
 </div>
