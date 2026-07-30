@@ -1,20 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="htmlTag">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TaskFlow | Settings</title>
-    <link rel="stylesheet" href="bootstrap.min.css">
+
+    <!-- ⚡ منع الوميض (Prevent Flash / Flicker): ضبط الاتجاه والثيم فوراً قبل التحميل -->
+    <script>
+        (function() {
+            const savedLang = localStorage.getItem('language') || 'en';
+            const savedTheme = localStorage.getItem('theme');
+            const html = document.documentElement;
+
+            // ضبط الاتجاه
+            if (savedLang === 'ar') {
+                html.setAttribute('lang', 'ar');
+                html.setAttribute('dir', 'rtl');
+            } else {
+                html.setAttribute('lang', 'en');
+                html.setAttribute('dir', 'ltr');
+            }
+
+            // ضبط Dark Mode مبكراً
+            if (savedTheme === 'dark') {
+                html.classList.add('dark-mode');
+            }
+        })();
+    </script>
+
+    <!-- Standard / RTL Bootstrap CSS dynamically loaded -->
+    <link rel="stylesheet" id="bootstrapCss" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <script>
+        // تحميل ملف Bootstrap RTL لو كانت اللغة عربية لمنع تخريب الـ Layout
+        if (localStorage.getItem('language') === 'ar') {
+            document.getElementById('bootstrapCss').href = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css";
+        }
+    </script>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="settings.css">
     <link rel="stylesheet" href="theme-toggle.css">
 </head>
 <body>
 
-<!-- Mobile Navbar (Only visible on small screens) -->
+<!-- Mobile Navbar -->
 <nav class="navbar navbar-dark bg-dark d-md-none px-3 mb-3">
     <a class="navbar-brand fw-bold" href="#">
-        <i class="bi bi-check2-square me-1"></i> TaskFlow
+        <i class="bi bi-check2-square mx-1"></i> <span data-i18n="appName">TaskFlow</span>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
         <span class="navbar-toggler-icon"></span>
@@ -24,51 +56,50 @@
 <div class="container-fluid">
     <div class="row">
         
-        <!-- Sidebar Navigation (Desktop Static & Mobile Offcanvas) -->
+        <!-- Sidebar Navigation -->
         <aside class="col-md-3 col-lg-2 offcanvas-md offcanvas-start bg-dark text-white p-3 min-vh-100 d-flex flex-column justify-content-between" id="mobileSidebar" tabindex="-1">
             <div class="w-100">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h3 class="text-white m-0">
-                        <i class="bi bi-check2-square"></i> TaskFlow
+                        <i class="bi bi-check2-square"></i> <span data-i18n="appName">TaskFlow</span>
                     </h3>
                     <button type="button" class="btn-close btn-close-white d-md-none" data-bs-dismiss="offcanvas" data-bs-target="#mobileSidebar" aria-label="Close"></button>
                 </div>
                 
-                <ul class="nav flex-column gap-1">
+                <ul class="nav flex-column gap-1 p-0">
                     <li class="nav-item">
                         <a class="nav-link text-white-50" href="dashboard.html">
-                            <i class="bi bi-grid me-2"></i> Dashboard
+                            <i class="bi bi-grid mx-2"></i><span data-i18n="dashboard">Dashboard</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-white-50" href="mytasks.html">
-                            <i class="bi bi-list-task me-2"></i> My Tasks
+                            <i class="bi bi-list-task mx-2"></i><span data-i18n="myTasks">My Tasks</span>
                         </a>
                     </li>
                    <li class="nav-item">
                         <a class="nav-link text-white-50" href="calendar.html">
-                            <i class="bi bi-card-checklist"></i> Calendar
+                            <i class="bi bi-card-checklist mx-2"></i><span data-i18n="calendar">Calendar</span>
                         </a>
                     </li>
-
                     <li class="nav-item">
                         <a class="nav-link text-white-50" href="profile.html">
-                            <i class="bi bi-person me-2"></i> Profile
+                            <i class="bi bi-person mx-2"></i><span data-i18n="profile">Profile</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active text-white fw-bold" href="#">
-                            <i class="bi bi-gear me-2"></i> Settings
+                            <i class="bi bi-gear mx-2"></i><span data-i18n="settings">Settings</span>
                         </a>
                     </li>
                 </ul>
             </div>
 
             <!-- Logout Link -->
-            <ul class="nav flex-column mt-auto pt-3 border-top border-secondary w-100">
+            <ul class="nav flex-column mt-auto pt-3 border-top border-secondary w-100 p-0">
                 <li class="nav-item">
                     <a class="nav-link text-danger" href="#" onclick="logout()">
-                        <i class="bi bi-box-arrow-right me-2"></i> Logout
+                        <i class="bi bi-box-arrow-right mx-2"></i><span data-i18n="logout">Logout</span>
                     </a>
                 </li>
             </ul>
@@ -79,8 +110,8 @@
             
             <!-- Header Section -->
             <header class="mb-4">
-                <h2 class="fw-bold m-0">Settings</h2>
-                <p class="text-muted m-0">Preferences and app configurations.</p>
+                <h2 class="fw-bold m-0" data-i18n="settings">Settings</h2>
+                <p class="text-muted m-0" data-i18n="settingsSubtitle">Preferences and app configurations.</p>
             </header>
 
             <div class="row g-4">
@@ -91,25 +122,41 @@
 
                     <!-- Appearance Options -->
                     <div class="card border-0 shadow-sm p-3 p-md-4 mb-4">
-                        <h5 class="fw-bold mb-3"><i class="bi bi-palette me-2"></i> Appearance</h5>
-                        <div class="d-flex align-items-center justify-content-between gap-2">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-palette mx-2"></i><span data-i18n="appearanceTitle">Appearance & Language</span></h5>
+                        
+                        <!-- Dark Mode Toggle -->
+                        <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
                             <div>
-                                <h6 class="mb-1 fw-bold">Dark Mode</h6>
-                                <p class="text-muted small m-0">Enable dark theme for the interface.</p>
+                                <h6 class="mb-1 fw-bold" data-i18n="darkMode">Dark Mode</h6>
+                                <p class="text-muted small m-0" data-i18n="darkModeDesc">Enable dark theme for the interface.</p>
                             </div>
                             <div class="form-check form-switch fs-5 m-0">
                                 <input class="form-check-input" type="checkbox" id="darkModeToggle">
                             </div>
                         </div>
+
+                        <hr>
+
+                        <!-- Language Selection -->
+                        <div class="d-flex align-items-center justify-content-between gap-2">
+                            <div>
+                                <h6 class="mb-1 fw-bold" data-i18n="language">Language</h6>
+                                <p class="text-muted small m-0" data-i18n="languageDesc">Select your preferred app language.</p>
+                            </div>
+                            <select class="form-select w-auto" id="languageSelect">
+                                <option value="en">English</option>
+                                <option value="ar">العربية</option>
+                            </select>
+                        </div>
                     </div>
 
                     <!-- Notifications Options -->
                     <div class="card border-0 shadow-sm p-3 p-md-4 mb-4">
-                        <h5 class="fw-bold mb-3"><i class="bi bi-bell me-2"></i> Notifications</h5>
+                        <h5 class="fw-bold mb-3"><i class="bi bi-bell mx-2"></i><span data-i18n="notificationsTitle">Notifications</span></h5>
                         <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
                             <div>
-                                <h6 class="mb-1 fw-bold">Task Reminders</h6>
-                                <p class="text-muted small m-0">Receive alerts for upcoming and overdue tasks.</p>
+                                <h6 class="mb-1 fw-bold" data-i18n="taskReminders">Task Reminders</h6>
+                                <p class="text-muted small m-0" data-i18n="taskRemindersDesc">Receive alerts for upcoming and overdue tasks.</p>
                             </div>
                             <div class="form-check form-switch fs-5 m-0">
                                 <input class="form-check-input" type="checkbox" id="taskRemindersToggle" checked>
@@ -118,8 +165,8 @@
                         <hr>
                         <div class="d-flex align-items-center justify-content-between gap-2">
                             <div>
-                                <h6 class="mb-1 fw-bold">Sound Effects</h6>
-                                <p class="text-muted small m-0">Play sound when completing a task.</p>
+                                <h6 class="mb-1 fw-bold" data-i18n="soundEffects">Sound Effects</h6>
+                                <p class="text-muted small m-0" data-i18n="soundEffectsDesc">Play sound when completing a task.</p>
                             </div>
                             <div class="form-check form-switch fs-5 m-0">
                                 <input class="form-check-input" type="checkbox" id="soundToggle">
@@ -127,20 +174,46 @@
                         </div>
                     </div>
 
-                    <!-- Data Management -->
+                    <!-- Security & Password -->
+                    <div class="card border-0 shadow-sm p-3 p-md-4 mb-4">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-shield-lock mx-2"></i><span data-i18n="securityTitle">Password & Security</span></h5>
+                        <form id="passwordForm" autocomplete="off">
+                            <div class="mb-3">
+                                <label for="currentPassword" class="form-label fw-bold small" data-i18n="currentPassword">Current Password</label>
+                                <input type="password" class="form-control" id="currentPassword" data-i18n-ph="phCurrentPassword" placeholder="Enter current password">
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-md-6 mb-3">
+                                    <label for="newPassword" class="form-label fw-bold small" data-i18n="newPassword">New Password</label>
+                                    <input type="password" class="form-control" id="newPassword" data-i18n-ph="phNewPassword" placeholder="Enter new password">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="confirmPassword" class="form-label fw-bold small" data-i18n="confirmPassword">Confirm New Password</label>
+                                    <input type="password" class="form-control" id="confirmPassword" data-i18n-ph="phConfirmPassword" placeholder="Confirm new password">
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-outline-primary btn-sm fw-bold" onclick="updatePassword()" data-i18n="updatePasswordBtn">Update Password</button>
+                        </form>
+                    </div>
+
+                    <!-- Danger Zone -->
                     <div class="card border-0 shadow-sm p-3 p-md-4 mb-4 border-start border-danger border-4">
-                        <h5 class="fw-bold mb-2 text-danger"><i class="bi bi-exclamation-triangle me-2"></i> Danger Zone</h5>
-                        <p class="text-muted small mb-3">Clear all your saved tasks permanently. This action cannot be undone.</p>
-                        <div>
+                        <h5 class="fw-bold mb-2 text-danger"><i class="bi bi-exclamation-triangle mx-2"></i><span data-i18n="dangerZoneTitle">Danger Zone</span></h5>
+                        <p class="text-muted small mb-3" data-i18n="dangerZoneDesc">Irreversible actions regarding your data and account.</p>
+                        
+                        <div class="d-flex flex-column flex-sm-row gap-2">
                             <button type="button" class="btn btn-outline-danger w-100 w-sm-auto" onclick="clearAllData()">
-                                <i class="bi bi-trash me-1"></i> Clear All Tasks Data
+                                <i class="bi bi-trash mx-1"></i><span data-i18n="clearDataBtn">Clear All Tasks Data</span>
+                            </button>
+                            <button type="button" class="btn btn-danger w-100 w-sm-auto" onclick="deleteAccount()">
+                                <i class="bi bi-person-x mx-1"></i><span data-i18n="deleteAccountBtn">Delete Account</span>
                             </button>
                         </div>
                     </div>
 
                     <!-- Save Settings Button -->
                     <div class="d-flex justify-content-end mb-4">
-                        <button type="button" class="btn btn-primary w-100 w-sm-auto px-4 fw-bold" onclick="saveSettings()">Save Settings</button>
+                        <button type="button" class="btn btn-primary w-100 w-sm-auto px-4 fw-bold" onclick="saveSettings()" data-i18n="saveSettingsBtn">Save Settings</button>
                     </div>
 
                 </div>
@@ -150,10 +223,11 @@
     </div>
 </div>
 
-<!-- Bootstrap Bundle JS -->
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="theme.js"></script>
+<!-- Scripts -->
 <script src="settings.js"></script>
+<script src="theme.js"></script>
 <script src="theme-toggle.js"></script>
 </body>
 </html>

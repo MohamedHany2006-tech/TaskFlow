@@ -1,57 +1,146 @@
+// 1. ترجمات الصفحة
+const translations = {
+    en: {
+        appName: "TaskFlow",
+        dashboard: "Dashboard",
+        myTasks: "My Tasks",
+        calendar: "Calendar",
+        profile: "Profile",
+        settings: "Settings",
+        logout: "Logout",
+        dashboardOverview: "Dashboard Overview",
+        welcomeMessage: "Welcome back! Here is a summary of your task progress.",
+        notifications: "Notifications",
+        clearAll: "Clear All",
+        noNotifications: "No new notifications",
+        manageTasks: "Manage Tasks",
+        statTotalTasks: "TOTAL TASKS",
+        statCompleted: "COMPLETED",
+        statInProgress: "IN PROGRESS",
+        statPending: "PENDING",
+        overallCompletion: "Overall Completion Rate",
+        tasksOverview: "Tasks Overview",
+        recentTasks: "Recent Tasks",
+        viewAll: "View All",
+        thTask: "Task",
+        thCategory: "Category",
+        thPriority: "Priority",
+        thDueDate: "Due Date",
+        thStatus: "Status",
+        noTasksFound: "No tasks found. Add some tasks in the My Tasks page!",
+        chartCompleted: "Completed",
+        chartPending: "Pending",
+        chartOverdue: "Overdue",
+        chartTasksLabel: "Tasks"
+    },
+    ar: {
+        appName: "تاسك فلو",
+        dashboard: "لوحة التحكم",
+        myTasks: "مهامي",
+        calendar: "التقويم",
+        profile: "الملف الشخصي",
+        settings: "الإعدادات",
+        logout: "تسجيل الخروج",
+        dashboardOverview: "لوحة التحكم العامة",
+        welcomeMessage: "أهلاً بك مجدداً! إليك ملخص تقدم مهامك.",
+        notifications: "الإشعارات",
+        clearAll: "مسح الكل",
+        noNotifications: "لا توجد إشعارات جديدة",
+        manageTasks: "إدارة المهام",
+        statTotalTasks: "إجمالي المهام",
+        statCompleted: "المكتملة",
+        statInProgress: "قيد التنفيذ",
+        statPending: "قيد الانتظار",
+        overallCompletion: "نسبة الإنجاز الكلية",
+        tasksOverview: "نظرة عامة على المهام",
+        recentTasks: "أحدث المهام",
+        viewAll: "عرض الكل",
+        thTask: "المهمة",
+        thCategory: "التصنيف",
+        thPriority: "الأولوية",
+        thDueDate: "تاريخ الاستحقاق",
+        thStatus: "الحالة",
+        noTasksFound: "لم يتم العثور على مهام. قم بإضافة بعض المهام في صفحة مهامي!",
+        chartCompleted: "مكتملة",
+        chartPending: "قيد الانتظار",
+        chartOverdue: "متأخرة",
+        chartTasksLabel: "مهام"
+    }
+};
+
+// 2. تطبيق اللغة
+function setLanguage(lang) {
+    const htmlTag = document.documentElement;
+    const bootstrapCss = document.getElementById('bootstrapCss');
+    
+    if (lang === 'ar') {
+        htmlTag.setAttribute('lang', 'ar');
+        htmlTag.setAttribute('dir', 'rtl');
+        if (bootstrapCss) {
+            bootstrapCss.setAttribute('href', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css');
+        }
+    } else {
+        htmlTag.setAttribute('lang', 'en');
+        htmlTag.setAttribute('dir', 'ltr');
+        if (bootstrapCss) {
+            bootstrapCss.setAttribute('href', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css');
+        }
+    }
+
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key]) {
+            element.textContent = translations[lang][key];
+        }
+    });
+
+    localStorage.setItem('language', lang);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. تحميل الإحصائيات وجدول أحدث المهام
+    const currentLang = localStorage.getItem('language') || 'en';
+    setLanguage(currentLang);
+
     loadDashboardData();
-
-    // 2. رسم الرسم البياني (Doughnut Chart)
     renderTasksChart();
-
-    // 3. عرض وتحديث الإشعارات من LocalStorage
     renderNotifications();
-
-    // 4. فحص مواعيد المهام القريبة
     checkDeadlines();
-
-    // 5. عرض الأنشطة الأخيرة في السجل
-    renderRecentActivities();
 });
 
-// === 1. جلب البيانات وحساب الإحصائيات وتعبئة جدول Recent Tasks ===
+// === 1. جلب البيانات وحساب الإحصائيات ===
 function loadDashboardData() {
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const currentLang = localStorage.getItem('language') || 'en';
 
-    // حساب الإحصائيات
     const total = tasks.length;
     const completed = tasks.filter(t => t.status === 'Completed').length;
     const inProgress = tasks.filter(t => t.status === 'In Progress').length;
     const pending = tasks.filter(t => t.status === 'Pending').length;
 
-    // تحديث قيم الكروت
     if (document.getElementById('statTotal')) document.getElementById('statTotal').innerText = total;
     if (document.getElementById('statCompleted')) document.getElementById('statCompleted').innerText = completed;
     if (document.getElementById('statInProgress')) document.getElementById('statInProgress').innerText = inProgress;
     if (document.getElementById('statPending')) document.getElementById('statPending').innerText = pending;
 
-    // نسبة الإنجاز المئوية
     const completionPercentage = total > 0 ? Math.round((completed / total) * 100) : 0;
     if (document.getElementById('progressPercentage')) document.getElementById('progressPercentage').innerText = `${completionPercentage}%`;
     if (document.getElementById('progressBar')) document.getElementById('progressBar').style.width = `${completionPercentage}%`;
 
-    // عرض أحدث 5 تاسكات في الجدول
     const recentTasksContainer = document.getElementById('recentTasksTable');
     if (!recentTasksContainer) return;
 
     recentTasksContainer.innerHTML = '';
 
     if (tasks.length === 0) {
+        const msg = translations[currentLang]?.noTasksFound || 'No tasks found.';
         recentTasksContainer.innerHTML = `
             <tr>
-                <td colspan="5" class="text-center text-muted py-4">No tasks found. Add some tasks in the My Tasks page!</td>
+                <td colspan="5" class="text-center text-muted py-4">${msg}</td>
             </tr>
         `;
         return;
     }
 
-    // ترتيب أحدث المهام أولاً
     const recentTasks = [...tasks].reverse().slice(0, 5);
 
     recentTasks.forEach(task => {
@@ -78,11 +167,12 @@ function loadDashboardData() {
     });
 }
 
-// === 2. رسم وتحديث Chart الخاصة بأداء المهام ===
+// === 2. رسم Chart الخاصة بالأداء مع الترجمة ===
 let myChartInstance = null;
 
 function renderTasksChart() {
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const currentLang = localStorage.getItem('language') || 'en';
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -112,10 +202,16 @@ function renderTasksChart() {
         myChartInstance.destroy();
     }
 
+    const labels = [
+        translations[currentLang]?.chartCompleted || 'Completed',
+        translations[currentLang]?.chartPending || 'Pending',
+        translations[currentLang]?.chartOverdue || 'Overdue'
+    ];
+
     myChartInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Completed', 'Pending', 'Overdue'],
+            labels: labels,
             datasets: [{
                 data: [completedCount, pendingCount, overdueCount],
                 backgroundColor: ['#198754', '#ffc107', '#dc3545'],
@@ -139,7 +235,8 @@ function renderTasksChart() {
                         label: function(context) {
                             const label = context.label || '';
                             const value = context.raw || 0;
-                            return ` ${label}: ${value} Tasks`;
+                            const taskUnit = translations[currentLang]?.chartTasksLabel || 'Tasks';
+                            return ` ${label}: ${value} ${taskUnit}`;
                         }
                     }
                 }
@@ -149,56 +246,7 @@ function renderTasksChart() {
     });
 }
 
-// === 3. عرض ومسح سجل الأنشطة (Recent Activity) ===
-function renderRecentActivities() {
-    const activityList = document.getElementById('activityList');
-    if (!activityList) return;
-
-    const activities = JSON.parse(localStorage.getItem('activities')) || [];
-
-    if (activities.length === 0) {
-        activityList.innerHTML = `
-            <li class="list-group-item text-center py-4 text-muted small border-0" id="emptyActivityMsg">
-                <i class="bi bi-clock-history fs-3 d-block mb-1 text-black-50"></i>
-                No recent activity logged yet.
-            </li>
-        `;
-        return;
-    }
-
-    activityList.innerHTML = activities.map(act => `
-        <li class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center border-bottom">
-            <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-dot fs-3 text-primary"></i>
-                <span class="fw-medium small text-dark">${act.text}</span>
-            </div>
-            <small class="text-muted extra-small" style="font-size: 0.75rem;">${act.time || 'Just now'}</small>
-        </li>
-    `).join('');
-}
-
-function clearActivityLog() {
-    localStorage.removeItem('activities');
-    renderRecentActivities();
-}
-
-function logActivity(text, timeAgo = 'Just now') {
-    let activities = JSON.parse(localStorage.getItem('activities')) || [];
-    
-    activities.unshift({
-        id: Date.now(),
-        text: text,
-        time: timeAgo
-    });
-
-    if (activities.length > 10) activities.pop();
-    localStorage.setItem('activities', JSON.stringify(activities));
-}
-
-// ==========================================================
-// === 4. إدارة نظام الإشعارات التفاعلي (Interactive Notifications) ===
-// ==========================================================
-
+// === 3. إدارة الإشعارات ===
 function getNotifications() {
     return JSON.parse(localStorage.getItem('app_notifications')) || [];
 }
@@ -207,11 +255,11 @@ function saveNotifications(notifications) {
     localStorage.setItem('app_notifications', JSON.stringify(notifications));
 }
 
-// رسم الإشعارات في القائمة المنسدلة
 function renderNotifications() {
     const notifications = getNotifications();
     const notifList = document.getElementById('notifList');
     const notifBadge = document.getElementById('notifBadge');
+    const currentLang = localStorage.getItem('language') || 'en';
 
     if (!notifList) return;
 
@@ -228,10 +276,11 @@ function renderNotifications() {
     }
 
     if (notifications.length === 0) {
+        const noNotifText = translations[currentLang]?.noNotifications || 'No new notifications';
         notifList.innerHTML = `
             <li id="emptyNotifMsg" class="text-center py-4 text-muted small">
                 <i class="bi bi-inbox fs-3 d-block mb-1 text-black-50"></i>
-                No new notifications
+                ${noNotifText}
             </li>
         `;
         return;
@@ -274,7 +323,54 @@ function renderNotifications() {
     });
 }
 
-// إضافة إشعار جديد
+function markNotificationAsRead(notifId) {
+    let notifications = getNotifications();
+    notifications = notifications.map(n => {
+        if (n.id === notifId) n.read = true;
+        return n;
+    });
+    saveNotifications(notifications);
+    renderNotifications();
+}
+
+function deleteNotification(notifId, event) {
+    if (event) event.stopPropagation();
+    let notifications = getNotifications();
+    notifications = notifications.filter(n => n.id !== notifId);
+    saveNotifications(notifications);
+    renderNotifications();
+}
+
+function clearNotifications() {
+    saveNotifications([]);
+    renderNotifications();
+}
+
+// === 4. فحص المواعيد ===
+function checkDeadlines() {
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const notifications = getNotifications();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    tasks.forEach(task => {
+        if (task.status !== 'Completed' && task.date) {
+            const taskDate = new Date(task.date);
+            taskDate.setHours(0, 0, 0, 0);
+
+            const diffTime = taskDate - today;
+            const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 1) {
+                const alreadyNotified = notifications.some(n => n.taskId === task.id && n.type === 'Deadline Tomorrow');
+                if (!alreadyNotified) {
+                    addNotification('Deadline Tomorrow', `Task "${task.title}" is due tomorrow!`, task.id);
+                }
+            }
+        }
+    });
+}
+
 function addNotification(type, message, taskId = null) {
     const notifications = getNotifications();
 
@@ -292,54 +388,9 @@ function addNotification(type, message, taskId = null) {
     renderNotifications();
 }
 
-// تحديد إشعار كمقروء
-function markNotificationAsRead(notifId) {
-    let notifications = getNotifications();
-    notifications = notifications.map(n => {
-        if (n.id === notifId) n.read = true;
-        return n;
-    });
-    saveNotifications(notifications);
-    renderNotifications();
-}
-
-// حذف إشعار فردي
-function deleteNotification(notifId, event) {
-    if (event) event.stopPropagation();
-    let notifications = getNotifications();
-    notifications = notifications.filter(n => n.id !== notifId);
-    saveNotifications(notifications);
-    renderNotifications();
-}
-
-// مسح جميع الإشعارات
-function clearNotifications() {
-    saveNotifications([]);
-    renderNotifications();
-}
-
-// === 5. فحص المواعيد لإشعار "Deadline Tomorrow" (بدون تكرار) ===
-function checkDeadlines() {
-    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    const notifications = getNotifications();
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    tasks.forEach(task => {
-        if (task.status !== 'Completed' && task.date) {
-            const taskDate = new Date(task.date);
-            taskDate.setHours(0, 0, 0, 0);
-
-            const diffTime = taskDate - today;
-            const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
-
-            if (diffDays === 1) {
-                // التأكد من عدم تكرار إضافة إشعار الـ Deadline لـ نفس التاسك
-                const alreadyNotified = notifications.some(n => n.taskId === task.id && n.type === 'Deadline Tomorrow');
-                if (!alreadyNotified) {
-                    addNotification('Deadline Tomorrow', `Task "${task.title}" is due tomorrow!`, task.id);
-                }
-            }
-        }
-    });
+// === 5. تسجيل الخروج ===
+function logout() {
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('currentUser');
+    window.location.href = 'login.html';
 }

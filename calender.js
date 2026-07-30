@@ -1,58 +1,126 @@
-document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
+// 1. ترجمات عناصر واجهة التقويم
+const translations = {
+    en: {
+        appName: "TaskFlow",
+        dashboard: "Dashboard",
+        myTasks: "My Tasks",
+        calendar: "Calendar",
+        profile: "Profile",
+        settings: "Settings",
+        logout: "Logout",
+        calendarOverview: "Calendar Overview",
+        calendarSubtitle: "Manage your task deadlines and schedule visually.",
+        notifications: "Notifications",
+        noNotifications: "No new notifications"
+    },
+    ar: {
+        appName: "تاسك فلو",
+        dashboard: "لوحة التحكم",
+        myTasks: "مهامي",
+        calendar: "التقويم",
+        profile: "الملف الشخصي",
+        settings: "الإعدادات",
+        logout: "تسجيل الخروج",
+        calendarOverview: "نظرة عامة على التقويم",
+        calendarSubtitle: "إدارة المواعيد النهائية للمهام والجدول الزمني بوضوح.",
+        notifications: "الإشعارات",
+        noNotifications: "لا توجد إشعارات جديدة"
+    }
+};
 
-            // جلب التاسكات المحفوظة في localStorage لإظهارها على التقويم
-            var savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
-            var calendarEvents = savedTasks.map(function(task) {
-                return {
-                    title: task.title,
-                    start: task.dueDate || new Date().toISOString().split('T')[0], // التاريخ
-                    backgroundColor: task.status === 'Completed' ? '#10b981' : (task.status === 'In Progress' ? '#3b82f6' : '#f59e0b'),
-                    borderColor: 'transparent'
-                };
-            });
+let calendar; // متغير عام لتفادي مشاكل النطاق
 
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,listMonth'
-                },
-                events: calendarEvents,
-                height: 'auto'
-            });
-
-            calendar.render();
-        });
-        const themeToggleBtn = document.getElementById('themeToggleBtn');
-        const themeIcon = document.getElementById('themeIcon');
-        const htmlTag = document.documentElement;
-
-        // Load saved theme from localStorage
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        setTheme(savedTheme);
-
-        themeToggleBtn.addEventListener('click', () => {
-            const currentTheme = htmlTag.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            setTheme(newTheme);
-        });
-
-        function setTheme(theme) {
-            htmlTag.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-
-            if (theme === 'dark') {
-                themeIcon.classList.replace('bi-moon-stars', 'bi-sun');
-                themeIcon.classList.replace('text-secondary', 'text-warning');
-            } else {
-                themeIcon.classList.replace('bi-sun', 'bi-moon-stars');
-                themeIcon.classList.replace('text-warning', 'text-secondary');
-            }
+// 2. دالة تطبيق اللغة والاتجاه والترجمة
+function setLanguage(lang) {
+    const htmlTag = document.documentElement;
+    const bootstrapCss = document.getElementById('bootstrapCss');
+    
+    if (lang === 'ar') {
+        htmlTag.setAttribute('lang', 'ar');
+        htmlTag.setAttribute('dir', 'rtl');
+        if (bootstrapCss) {
+            bootstrapCss.setAttribute('href', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css');
         }
-        window.addEventListener('resize', function() {
+    } else {
+        htmlTag.setAttribute('lang', 'en');
+        htmlTag.setAttribute('dir', 'ltr');
+        if (bootstrapCss) {
+            bootstrapCss.setAttribute('href', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css');
+        }
+    }
+
+    // ترجمة العناصر
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key]) {
+            element.textContent = translations[lang][key];
+        }
+    });
+
+    localStorage.setItem('language', lang);
+}
+
+// 3. تهيئة التقويم عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+    const currentLang = localStorage.getItem('language') || 'en';
+    setLanguage(currentLang);
+
+    const calendarEl = document.getElementById('calendar');
+
+    // جلب المهام من localStorage
+    const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const calendarEvents = savedTasks.map(function(task) {
+        return {
+            title: task.title,
+            start: task.dueDate || new Date().toISOString().split('T')[0],
+            backgroundColor: task.status === 'Completed' ? '#10b981' : (task.status === 'In Progress' ? '#3b82f6' : '#f59e0b'),
+            borderColor: 'transparent'
+        };
+    });
+
+    // تهيئة التقويم مع دعم الترجمة ونصوص الأزرار
+    if (calendarEl) {
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: currentLang === 'ar' ? 'ar' : 'en',
+            direction: currentLang === 'ar' ? 'rtl' : 'ltr',
+            
+            // 🔹 ترجمة نصوص الأزرار (Today, Month, Week, List)
+            buttonText: currentLang === 'ar' ? {
+                today: 'اليوم',
+                month: 'شهر',
+                week: 'أسبوع',
+                list: 'قائمة'
+            } : {
+                today: 'Today',
+                month: 'Month',
+                week: 'Week',
+                list: 'List'
+            },
+
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,listMonth'
+            },
+            events: calendarEvents,
+            height: 'auto'
+        });
+
+        calendar.render();
+    }
+});
+
+// ضبط تحديث حجم التقويم عند تغيير حجم الشاشة
+window.addEventListener('resize', function() {
     if (calendar) {
         calendar.updateSize();
     }
 });
+
+// دالة تسجيل الخروج
+function logout() {
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('currentUser');
+    window.location.href = 'login.html';
+}
