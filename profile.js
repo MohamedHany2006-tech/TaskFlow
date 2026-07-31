@@ -62,10 +62,8 @@ const translations = {
     }
 };
 
-// SVG افتراضي متناسق مع المظهر الداكن والفاتح بدلاً من الرابط المكسور
 const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='%236c757d' class='bi bi-person-circle' viewBox='0 0 16 16'><path d='M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z'/><path fill-rule='evenodd' d='M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z'/></svg>";
 
-// تهيئة البيانات بدون أي قيم وهمية (John Doe)
 let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
     username: '',
     email: '',
@@ -80,15 +78,18 @@ let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
 function setLanguage(lang) {
     const htmlTag = document.documentElement;
     const bootstrapCss = document.getElementById('bootstrapCss');
+    const langBtnText = document.getElementById('langBtnText');
     
     if (lang === 'ar') {
         htmlTag.setAttribute('lang', 'ar');
         htmlTag.setAttribute('dir', 'rtl');
         if (bootstrapCss) bootstrapCss.setAttribute('href', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css');
+        if (langBtnText) langBtnText.textContent = 'English';
     } else {
         htmlTag.setAttribute('lang', 'en');
         htmlTag.setAttribute('dir', 'ltr');
         if (bootstrapCss) bootstrapCss.setAttribute('href', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css');
+        if (langBtnText) langBtnText.textContent = 'العربية';
     }
 
     document.querySelectorAll('[data-i18n]').forEach(element => {
@@ -104,50 +105,60 @@ function setLanguage(lang) {
     }
 
     localStorage.setItem('language', lang);
+    loadProfileData();
 }
 
-// 3. تحميل واستعراض بيانات البروفايل
+// 3. تحميل واستعراض بيانات البروفايل بأمان
 function loadProfileData() {
     const currentLang = localStorage.getItem('language') || 'en';
     const t = translations[currentLang] || translations.en;
 
-    // عرض بيانات الكارت الجانبي مع حماية من القيم الفارغة
-    document.getElementById('profileDisplayName').textContent = currentUser.username.trim() !== '' ? currentUser.username : t.defaultName;
-    document.getElementById('profileDisplayOccupation').textContent = currentUser.occupation.trim() !== '' ? currentUser.occupation : t.defaultOccupation;
-    document.getElementById('profileDisplayBio').textContent = currentUser.bio.trim() !== '' ? currentUser.bio : t.defaultBio;
-    document.getElementById('profileDisplayCountry').textContent = currentUser.country.trim() !== '' ? currentUser.country : t.noData;
-    document.getElementById('profileDisplayPhone').textContent = currentUser.phone.trim() !== '' ? currentUser.phone : t.noData;
+    const setElText = (id, text) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    };
+
+    setElText('profileDisplayName', (currentUser.username && currentUser.username.trim()) ? currentUser.username : t.defaultName);
+    setElText('profileDisplayOccupation', (currentUser.occupation && currentUser.occupation.trim()) ? currentUser.occupation : t.defaultOccupation);
+    setElText('profileDisplayBio', (currentUser.bio && currentUser.bio.trim()) ? currentUser.bio : t.defaultBio);
+    setElText('profileDisplayCountry', (currentUser.country && currentUser.country.trim()) ? currentUser.country : t.noData);
+    setElText('profileDisplayPhone', (currentUser.phone && currentUser.phone.trim()) ? currentUser.phone : t.noData);
 
     const avatarImg = document.getElementById('profileImage');
     const removeBtn = document.getElementById('removeAvatarBtn');
     
-    if (currentUser.avatar && currentUser.avatar.trim() !== '' && !currentUser.avatar.includes('via.placeholder.com')) {
-        avatarImg.src = currentUser.avatar;
-        if (removeBtn) {
-            removeBtn.classList.remove('d-none');
-            removeBtn.classList.add('d-flex');
-        }
-    } else {
-        avatarImg.src = DEFAULT_AVATAR;
-        if (removeBtn) {
-            removeBtn.classList.add('d-none');
-            removeBtn.classList.remove('d-flex');
+    if (avatarImg) {
+        if (currentUser.avatar && currentUser.avatar.trim() !== '' && !currentUser.avatar.includes('via.placeholder.com')) {
+            avatarImg.src = currentUser.avatar;
+            if (removeBtn) {
+                removeBtn.classList.remove('d-none');
+                removeBtn.classList.add('d-flex');
+            }
+        } else {
+            avatarImg.src = DEFAULT_AVATAR;
+            if (removeBtn) {
+                removeBtn.classList.add('d-none');
+                removeBtn.classList.remove('d-flex');
+            }
         }
     }
 
-    // تعبئة النموذج لتسهيل التعديل
-    document.getElementById('editUsername').value = currentUser.username || '';
-    document.getElementById('editEmail').value = currentUser.email || '';
-    document.getElementById('editOccupation').value = currentUser.occupation || '';
-    document.getElementById('editCountry').value = currentUser.country || '';
-    document.getElementById('editPhone').value = currentUser.phone || '';
-    document.getElementById('editBio').value = currentUser.bio || '';
+    const setInputValue = (id, val) => {
+        const input = document.getElementById(id);
+        if (input) input.value = val || '';
+    };
 
-    // حساب إحصائيات المهام
+    setInputValue('editUsername', currentUser.username);
+    setInputValue('editEmail', currentUser.email);
+    setInputValue('editOccupation', currentUser.occupation);
+    setInputValue('editCountry', currentUser.country);
+    setInputValue('editPhone', currentUser.phone);
+    setInputValue('editBio', currentUser.bio);
+
     calculateTaskStats();
 }
 
-// 4. حساب نسبة إنجاز المهام
+// 4. حساب إحصائيات المهام
 function calculateTaskStats() {
     const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
     const total = savedTasks.length;
@@ -155,10 +166,15 @@ function calculateTaskStats() {
     const pending = total - done;
     const rate = total > 0 ? Math.round((done / total) * 100) : 0;
 
-    document.getElementById('userTotalTasks').textContent = total;
-    document.getElementById('userPendingTasks').textContent = pending;
-    document.getElementById('userCompletedTasks').textContent = done;
-    document.getElementById('completionRateText').textContent = `${rate}%`;
+    const setElText = (id, text) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+    };
+
+    setElText('userTotalTasks', total);
+    setElText('userPendingTasks', pending);
+    setElText('userCompletedTasks', done);
+    setElText('completionRateText', `${rate}%`);
 
     const progressBar = document.getElementById('completionProgressBar');
     if (progressBar) {
@@ -167,11 +183,43 @@ function calculateTaskStats() {
     }
 }
 
-// 5. عند بدء التحميل
+// 5. إدارة الثيم
+function initTheme() {
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const html = document.documentElement;
+
+    let currentTheme = localStorage.getItem('theme') || 'light';
+    
+    function applyTheme(theme) {
+        if (theme === 'dark') {
+            html.classList.add('dark-mode');
+            if (themeIcon) themeIcon.className = 'bi bi-sun-fill fs-5 text-warning';
+        } else {
+            html.classList.remove('dark-mode');
+            if (themeIcon) themeIcon.className = 'bi bi-moon-stars fs-5 text-secondary';
+        }
+    }
+
+    applyTheme(currentTheme);
+
+    if (themeToggleBtn) {
+        themeToggleBtn.onclick = function() {
+            let activeTheme = localStorage.getItem('theme') || 'light';
+            let newTheme = activeTheme === 'dark' ? 'light' : 'dark';
+            
+            localStorage.setItem('theme', newTheme);
+            applyTheme(newTheme);
+        };
+    }
+}
+
+// 6. عند تهيئة الصفحة
 document.addEventListener('DOMContentLoaded', function() {
     const currentLang = localStorage.getItem('language') || 'en';
+    
+    initTheme();
     setLanguage(currentLang);
-    loadProfileData();
 
     // رفع الصورة الشخصية
     const avatarInput = document.getElementById('editAvatarInput');
@@ -182,7 +230,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     currentUser.avatar = event.target.result;
-                    document.getElementById('profileImage').src = event.target.result;
+                    const img = document.getElementById('profileImage');
+                    if (img) img.src = event.target.result;
+                    
                     const removeBtn = document.getElementById('removeAvatarBtn');
                     if (removeBtn) {
                         removeBtn.classList.remove('d-none');
@@ -199,40 +249,43 @@ document.addEventListener('DOMContentLoaded', function() {
     if (removeAvatarBtn) {
         removeAvatarBtn.addEventListener('click', function() {
             currentUser.avatar = '';
-            document.getElementById('profileImage').src = DEFAULT_AVATAR;
+            const img = document.getElementById('profileImage');
+            if (img) img.src = DEFAULT_AVATAR;
+            
             removeAvatarBtn.classList.add('d-none');
             removeAvatarBtn.classList.remove('d-flex');
-            document.getElementById('editAvatarInput').value = '';
+            
+            const input = document.getElementById('editAvatarInput');
+            if (input) input.value = '';
         });
     }
 
-    // حفظ نموذج البيانات
+    // حفظ النموذج
     const profileForm = document.getElementById('profileForm');
     if (profileForm) {
         profileForm.addEventListener('submit', function(e) {
             e.preventDefault();
 
-            currentUser.username = document.getElementById('editUsername').value;
-            currentUser.email = document.getElementById('editEmail').value;
-            currentUser.occupation = document.getElementById('editOccupation').value;
-            currentUser.country = document.getElementById('editCountry').value;
-            currentUser.phone = document.getElementById('editPhone').value;
-            currentUser.bio = document.getElementById('editBio').value;
+            currentUser.username = document.getElementById('editUsername')?.value || '';
+            currentUser.email = document.getElementById('editEmail')?.value || '';
+            currentUser.occupation = document.getElementById('editOccupation')?.value || '';
+            currentUser.country = document.getElementById('editCountry')?.value || '';
+            currentUser.phone = document.getElementById('editPhone')?.value || '';
+            currentUser.bio = document.getElementById('editBio')?.value || '';
 
-            // حفظ البيانات بالـ LocalStorage
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
 
-            // إظهار تنبيه النجاح
             const alert = document.getElementById('profileAlert');
-            const lang = localStorage.getItem('language') || 'en';
-            alert.className = 'alert alert-success d-block';
-            alert.textContent = translations[lang].successSave;
+            if (alert) {
+                const lang = localStorage.getItem('language') || 'en';
+                alert.className = 'alert alert-success d-block';
+                alert.textContent = translations[lang].successSave;
 
-            setTimeout(() => {
-                alert.className = 'alert d-none';
-            }, 3000);
+                setTimeout(() => {
+                    alert.className = 'alert d-none';
+                }, 3000);
+            }
 
-            // تحديث الواجهة
             loadProfileData();
         });
     }
