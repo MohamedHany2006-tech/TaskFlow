@@ -10,7 +10,6 @@
             const savedTheme = localStorage.getItem('theme');
             const html = document.documentElement;
 
-            // ضبط الاتجاه مبكراً
             if (savedLang === 'ar') {
                 html.setAttribute('lang', 'ar');
                 html.setAttribute('dir', 'rtl');
@@ -19,7 +18,6 @@
                 html.setAttribute('dir', 'ltr');
             }
 
-            // ضبط Dark Mode مبكراً
             if (savedTheme === 'dark') {
                 html.classList.add('dark-mode');
             }
@@ -71,7 +69,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-white-50" href="calendar.html">
-                            <i class="bi bi-card-checklist me-2"></i> <span data-i18n="calendar">Calendar</span>
+                            <i class="bi bi-calendar3 me-2"></i> <span data-i18n="calendar">Calendar</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -100,9 +98,15 @@
         <!-- Main Content -->
         <main class="col-md-9 col-lg-10 ms-sm-auto px-md-4 py-3">
             
-            <header class="mb-4">
-                <h2 class="fw-bold m-0" data-i18n="profileSettings">Profile Settings</h2>
-                <p class="text-muted m-0" data-i18n="profileSubtitle">Manage your profile information and account details.</p>
+            <header class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold m-0" data-i18n="profileSettings">Profile Settings</h2>
+                    <p class="text-muted m-0" data-i18n="profileSubtitle">Manage your profile information and account details.</p>
+                </div>
+                <!-- Theme Toggle Button -->
+                <button class="btn btn-light rounded-circle shadow-sm p-2 notif-btn" id="themeToggleBtn" title="Toggle Theme">
+                    <i class="bi bi-moon-stars fs-5 text-secondary" id="themeIcon"></i>
+                </button>
             </header>
 
             <div class="row g-4">
@@ -111,24 +115,30 @@
                 <div class="col-12 col-lg-4">
                     <div class="card border-0 shadow-sm text-center p-4">
                         
-                        <!-- Avatar Section مع زر الحذف -->
+                        <!-- Avatar Section -->
                         <div class="position-relative d-inline-block mx-auto mb-3">
-                            <img id="profileImage" src="https://via.placeholder.com/100" class="rounded-circle object-fit-cover shadow-sm" width="100" height="100" alt="Profile Picture">
+                            <img id="profileImage" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='%236c757d' class='bi bi-person-circle' viewBox='0 0 16 16'><path d='M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z'/><path fill-rule='evenodd' d='M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z'/></svg>" class="rounded-circle object-fit-cover shadow-sm bg-light" width="100" height="100" alt="Profile Picture">
                             
-                            <!-- زر التغيير -->
-                            <label for="editAvatarInput" class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-2 shadow-sm cursor-pointer" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;" title="Change Photo">
+                            <!-- Change Avatar Button -->
+                            <label for="editAvatarInput" class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle shadow-sm cursor-pointer d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" title="Change Photo">
                                 <i class="bi bi-camera-fill small"></i>
                             </label>
 
-                            <!-- زر الحذف -->
-                            <button type="button" id="removeAvatarBtn" class="position-absolute top-0 end-0 bg-danger text-white border-0 rounded-circle p-1 shadow-sm d-none" style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;" title="Remove Photo">
+                            <!-- Remove Avatar Button -->
+                            <button type="button" id="removeAvatarBtn" class="position-absolute top-0 end-0 bg-danger text-white border-0 rounded-circle shadow-sm d-none align-items-center justify-content-center" style="width: 24px; height: 24px;" title="Remove Photo">
                                 <i class="bi bi-x-lg extra-small"></i>
                             </button>
                         </div>
 
-                        <h4 class="fw-bold mb-1" id="profileDisplayName">User Name</h4>
-                        <p class="text-muted small mb-3" id="profileDisplayEmail">user@example.com</p>
+                        <h4 class="fw-bold mb-1" id="profileDisplayName">-</h4>
+                        <p class="text-primary small mb-2 fw-semibold" id="profileDisplayOccupation">-</p>
+                        <p class="text-muted small mb-3" id="profileDisplayBio">-</p>
                         
+                        <div class="d-flex justify-content-center gap-3 text-muted small mb-3">
+                            <span id="profileDisplayLocation"><i class="bi bi-geo-alt me-1"></i><span id="profileDisplayCountry">-</span></span>
+                            <span id="profileDisplayPhoneContainer"><i class="bi bi-telephone me-1"></i><span id="profileDisplayPhone">-</span></span>
+                        </div>
+
                         <hr>
 
                         <!-- Task Stats -->
@@ -169,29 +179,64 @@
                         <div id="profileAlert" class="alert d-none" role="alert"></div>
 
                         <form id="profileForm">
+                            <!-- Image Input -->
                             <div class="mb-3">
                                 <label for="editAvatarInput" class="form-label fw-bold" data-i18n="profilePicture">Profile Picture</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-image"></i></span>
                                     <input type="file" class="form-control" id="editAvatarInput" accept="image/*">
-                                    <button class="btn btn-outline-danger d-none" type="button" id="removeAvatarBtnInput"><i class="bi bi-trash"></i> Remove</button>
                                 </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="editUsername" class="form-label fw-bold" data-i18n="username">Username</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                    <input type="text" class="form-control" id="editUsername" required>
+                            <!-- Username & Email -->
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label for="editUsername" class="form-label fw-bold" data-i18n="username">Username</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                        <input type="text" class="form-control" id="editUsername" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="editEmail" class="form-label fw-bold" data-i18n="emailAddress">Email Address</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                        <input type="email" class="form-control" id="editEmail" required>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="editEmail" class="form-label fw-bold" data-i18n="emailAddress">Email Address</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                    <input type="email" class="form-control" id="editEmail" required>
+                            <!-- Occupation & Country -->
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label for="editOccupation" class="form-label fw-bold" data-i18n="occupation">Occupation</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
+                                        <input type="text" class="form-control" id="editOccupation">
+                                    </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <label for="editCountry" class="form-label fw-bold" data-i18n="country">Country</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-globe"></i></span>
+                                        <input type="text" class="form-control" id="editCountry">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="mb-3">
+                                <label for="editPhone" class="form-label fw-bold" data-i18n="phone">Phone Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                    <input type="tel" class="form-control" id="editPhone">
+                                </div>
+                            </div>
+
+                            <!-- Bio -->
+                            <div class="mb-3">
+                                <label for="editBio" class="form-label fw-bold" data-i18n="bio">Bio</label>
+                                <textarea class="form-control" id="editBio" rows="3" style="resize: none;"></textarea>
                             </div>
 
                             <div class="d-flex justify-content-end gap-2 mt-4">

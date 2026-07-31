@@ -1,4 +1,4 @@
-// 1. مصفوفة الترجمة الشاملة لصفحة البروفايل (نطاق عام)
+// 1. القاموس للترجمات
 const translations = {
     en: {
         appName: "TaskFlow",
@@ -14,11 +14,21 @@ const translations = {
         profilePicture: "Profile Picture",
         username: "Username",
         emailAddress: "Email Address",
+        occupation: "Occupation",
+        country: "Country",
+        phone: "Phone Number",
+        bio: "Bio",
         saveChanges: "Save Changes",
-        done: "Done",
-        pending: "Pending",
         total: "Total",
-        completionRate: "Completion Rate"
+        pending: "Pending",
+        done: "Done",
+        completionRate: "Completion Rate",
+        successSave: "Profile updated successfully!",
+        bioPlaceholder: "Tell us about yourself...",
+        defaultBio: "No bio added yet.",
+        defaultOccupation: "User",
+        defaultName: "New User",
+        noData: "-"
     },
     ar: {
         appName: "تاسك فلو",
@@ -29,20 +39,44 @@ const translations = {
         settings: "الإعدادات",
         logout: "تسجيل الخروج",
         profileSettings: "إعدادات الملف الشخصي",
-        profileSubtitle: "إدارة معلومات ملفك الشخصي وتفاصيل الحساب.",
+        profileSubtitle: "إدارة معلومات ملفك الشخصي وتفاصيل حسابك.",
         editProfileTitle: "تعديل معلومات الملف الشخصي",
         profilePicture: "الصورة الشخصية",
         username: "اسم المستخدم",
         emailAddress: "البريد الإلكتروني",
+        occupation: "المهنة / الوظيفة",
+        country: "الدولة",
+        phone: "رقم الهاتف",
+        bio: "النبذة الشخصية (Bio)",
         saveChanges: "حفظ التغييرات",
-        done: "مكتملة",
-        pending: "قيد الانتظار",
         total: "الإجمالي",
-        completionRate: "نسبة الإنجاز"
+        pending: "معلقة",
+        done: "مكتملة",
+        completionRate: "نسبة الإنجاز",
+        successSave: "تم تحديث الملف الشخصي بنجاح!",
+        bioPlaceholder: "اكتب نبذة قصيرة عن نفسك...",
+        defaultBio: "لا توجد نبذة شخصية بعد.",
+        defaultOccupation: "مستخدم",
+        defaultName: "مستخدم جديد",
+        noData: "-"
     }
 };
 
-// 2. دالة تطبيق اللغة والاتجاه والترجمة
+// SVG افتراضي متناسق مع المظهر الداكن والفاتح بدلاً من الرابط المكسور
+const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='%236c757d' class='bi bi-person-circle' viewBox='0 0 16 16'><path d='M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z'/><path fill-rule='evenodd' d='M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z'/></svg>";
+
+// تهيئة البيانات بدون أي قيم وهمية (John Doe)
+let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
+    username: '',
+    email: '',
+    occupation: '',
+    country: '',
+    phone: '',
+    bio: '',
+    avatar: ''
+};
+
+// 2. تطبيق اللغة
 function setLanguage(lang) {
     const htmlTag = document.documentElement;
     const bootstrapCss = document.getElementById('bootstrapCss');
@@ -50,18 +84,13 @@ function setLanguage(lang) {
     if (lang === 'ar') {
         htmlTag.setAttribute('lang', 'ar');
         htmlTag.setAttribute('dir', 'rtl');
-        if (bootstrapCss) {
-            bootstrapCss.setAttribute('href', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css');
-        }
+        if (bootstrapCss) bootstrapCss.setAttribute('href', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css');
     } else {
         htmlTag.setAttribute('lang', 'en');
         htmlTag.setAttribute('dir', 'ltr');
-        if (bootstrapCss) {
-            bootstrapCss.setAttribute('href', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css');
-        }
+        if (bootstrapCss) bootstrapCss.setAttribute('href', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css');
     }
 
-    // ترجمة جميع العناصر التي تحتوي على data-i18n
     document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
         if (translations[lang] && translations[lang][key]) {
@@ -69,195 +98,148 @@ function setLanguage(lang) {
         }
     });
 
-    // ترجمة الـ Placeholders
-    document.querySelectorAll('[data-i18n-ph]').forEach(element => {
-        const key = element.getAttribute('data-i18n-ph');
-        if (translations[lang] && translations[lang][key]) {
-            element.setAttribute('placeholder', translations[lang][key]);
-        }
-    });
+    const bioInput = document.getElementById('editBio');
+    if (bioInput && translations[lang]) {
+        bioInput.placeholder = translations[lang].bioPlaceholder;
+    }
 
     localStorage.setItem('language', lang);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    // قراءة اللغة المحفوظة وتنفيذ الترجمة
+// 3. تحميل واستعراض بيانات البروفايل
+function loadProfileData() {
+    const currentLang = localStorage.getItem('language') || 'en';
+    const t = translations[currentLang] || translations.en;
+
+    // عرض بيانات الكارت الجانبي مع حماية من القيم الفارغة
+    document.getElementById('profileDisplayName').textContent = currentUser.username.trim() !== '' ? currentUser.username : t.defaultName;
+    document.getElementById('profileDisplayOccupation').textContent = currentUser.occupation.trim() !== '' ? currentUser.occupation : t.defaultOccupation;
+    document.getElementById('profileDisplayBio').textContent = currentUser.bio.trim() !== '' ? currentUser.bio : t.defaultBio;
+    document.getElementById('profileDisplayCountry').textContent = currentUser.country.trim() !== '' ? currentUser.country : t.noData;
+    document.getElementById('profileDisplayPhone').textContent = currentUser.phone.trim() !== '' ? currentUser.phone : t.noData;
+
+    const avatarImg = document.getElementById('profileImage');
+    const removeBtn = document.getElementById('removeAvatarBtn');
+    
+    if (currentUser.avatar && currentUser.avatar.trim() !== '' && !currentUser.avatar.includes('via.placeholder.com')) {
+        avatarImg.src = currentUser.avatar;
+        if (removeBtn) {
+            removeBtn.classList.remove('d-none');
+            removeBtn.classList.add('d-flex');
+        }
+    } else {
+        avatarImg.src = DEFAULT_AVATAR;
+        if (removeBtn) {
+            removeBtn.classList.add('d-none');
+            removeBtn.classList.remove('d-flex');
+        }
+    }
+
+    // تعبئة النموذج لتسهيل التعديل
+    document.getElementById('editUsername').value = currentUser.username || '';
+    document.getElementById('editEmail').value = currentUser.email || '';
+    document.getElementById('editOccupation').value = currentUser.occupation || '';
+    document.getElementById('editCountry').value = currentUser.country || '';
+    document.getElementById('editPhone').value = currentUser.phone || '';
+    document.getElementById('editBio').value = currentUser.bio || '';
+
+    // حساب إحصائيات المهام
+    calculateTaskStats();
+}
+
+// 4. حساب نسبة إنجاز المهام
+function calculateTaskStats() {
+    const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const total = savedTasks.length;
+    const done = savedTasks.filter(t => t.status === 'Completed' || t.status === 'مكتملة').length;
+    const pending = total - done;
+    const rate = total > 0 ? Math.round((done / total) * 100) : 0;
+
+    document.getElementById('userTotalTasks').textContent = total;
+    document.getElementById('userPendingTasks').textContent = pending;
+    document.getElementById('userCompletedTasks').textContent = done;
+    document.getElementById('completionRateText').textContent = `${rate}%`;
+
+    const progressBar = document.getElementById('completionProgressBar');
+    if (progressBar) {
+        progressBar.style.width = `${rate}%`;
+        progressBar.setAttribute('aria-valuenow', rate);
+    }
+}
+
+// 5. عند بدء التحميل
+document.addEventListener('DOMContentLoaded', function() {
     const currentLang = localStorage.getItem('language') || 'en';
     setLanguage(currentLang);
+    loadProfileData();
 
-    // تحميل البيانات والإحصائيات
-    loadUserProfile();
-    calculateTaskStats();
-
-    // التعامل مع رفع صورة جديدة
-    const editAvatarInput = document.getElementById('editAvatarInput');
-    if (editAvatarInput) {
-        editAvatarInput.addEventListener('change', (e) => {
+    // رفع الصورة الشخصية
+    const avatarInput = document.getElementById('editAvatarInput');
+    if (avatarInput) {
+        avatarInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function (event) {
-                    const base64Image = event.target.result;
-                    const profileImage = document.getElementById('profileImage');
-                    if (profileImage) profileImage.src = base64Image;
-
-                    localStorage.setItem('userAvatar', base64Image);
-                    toggleRemoveAvatarBtn(true);
+                reader.onload = function(event) {
+                    currentUser.avatar = event.target.result;
+                    document.getElementById('profileImage').src = event.target.result;
+                    const removeBtn = document.getElementById('removeAvatarBtn');
+                    if (removeBtn) {
+                        removeBtn.classList.remove('d-none');
+                        removeBtn.classList.add('d-flex');
+                    }
                 };
                 reader.readAsDataURL(file);
             }
         });
     }
 
-    // التعامل مع حذف الصورة وإعادتها للافتراضية
+    // حذف الصورة الشخصية
     const removeAvatarBtn = document.getElementById('removeAvatarBtn');
-    const removeAvatarBtnInput = document.getElementById('removeAvatarBtnInput');
+    if (removeAvatarBtn) {
+        removeAvatarBtn.addEventListener('click', function() {
+            currentUser.avatar = '';
+            document.getElementById('profileImage').src = DEFAULT_AVATAR;
+            removeAvatarBtn.classList.add('d-none');
+            removeAvatarBtn.classList.remove('d-flex');
+            document.getElementById('editAvatarInput').value = '';
+        });
+    }
 
-    if (removeAvatarBtn) removeAvatarBtn.addEventListener('click', handleRemoveAvatar);
-    if (removeAvatarBtnInput) removeAvatarBtnInput.addEventListener('click', handleRemoveAvatar);
-
-    // حفظ بيانات البروفايل عند حفظ التعديلات
+    // حفظ نموذج البيانات
     const profileForm = document.getElementById('profileForm');
     if (profileForm) {
-        profileForm.addEventListener('submit', (e) => {
+        profileForm.addEventListener('submit', function(e) {
             e.preventDefault();
 
-            const username = document.getElementById('editUsername').value.trim();
-            const email = document.getElementById('editEmail').value.trim();
+            currentUser.username = document.getElementById('editUsername').value;
+            currentUser.email = document.getElementById('editEmail').value;
+            currentUser.occupation = document.getElementById('editOccupation').value;
+            currentUser.country = document.getElementById('editCountry').value;
+            currentUser.phone = document.getElementById('editPhone').value;
+            currentUser.bio = document.getElementById('editBio').value;
 
-            let registeredUser = JSON.parse(localStorage.getItem('registeredUser')) || {};
+            // حفظ البيانات بالـ LocalStorage
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
 
-            registeredUser.username = username;
-            registeredUser.email = email;
+            // إظهار تنبيه النجاح
+            const alert = document.getElementById('profileAlert');
+            const lang = localStorage.getItem('language') || 'en';
+            alert.className = 'alert alert-success d-block';
+            alert.textContent = translations[lang].successSave;
 
-            localStorage.setItem('registeredUser', JSON.stringify(registeredUser));
-            localStorage.setItem('username', username);
-            localStorage.setItem('userEmail', email);
-            localStorage.setItem('currentUser', email);
+            setTimeout(() => {
+                alert.className = 'alert d-none';
+            }, 3000);
 
-            const profileDisplayName = document.getElementById('profileDisplayName');
-            const profileDisplayEmail = document.getElementById('profileDisplayEmail');
-            if (profileDisplayName) profileDisplayName.textContent = username;
-            if (profileDisplayEmail) profileDisplayEmail.textContent = email;
-
-            const avatarInitial = document.getElementById('avatarInitial');
-            if (avatarInitial) {
-                avatarInitial.textContent = (username || 'U').charAt(0).toUpperCase();
-            }
-
-            showAlert('Profile updated successfully!', 'success');
+            // تحديث الواجهة
+            loadProfileData();
         });
     }
 });
 
-// === دالة تحميل بيانات البروفايل والصورة ===
-function loadUserProfile() {
-    const DEFAULT_AVATAR = 'https://via.placeholder.com/100';
-
-    let registeredUser = JSON.parse(localStorage.getItem('registeredUser')) || {};
-    const username = localStorage.getItem('username') || registeredUser.username || 'User Name';
-    const email = localStorage.getItem('userEmail') || registeredUser.email || localStorage.getItem('currentUser') || 'user@example.com';
-    const avatar = localStorage.getItem('userAvatar') || DEFAULT_AVATAR;
-
-    const editUsername = document.getElementById('editUsername');
-    const editEmail = document.getElementById('editEmail');
-    const profileDisplayName = document.getElementById('profileDisplayName');
-    const profileDisplayEmail = document.getElementById('profileDisplayEmail');
-    const profileImage = document.getElementById('profileImage');
-    const avatarInitial = document.getElementById('avatarInitial');
-
-    if (editUsername) editUsername.value = username;
-    if (editEmail) editEmail.value = email;
-    if (profileDisplayName) profileDisplayName.textContent = username;
-    if (profileDisplayEmail) profileDisplayEmail.textContent = email;
-    if (profileImage) profileImage.src = avatar;
-
-    if (avatarInitial) {
-        avatarInitial.textContent = (username || 'U').charAt(0).toUpperCase();
-    }
-
-    toggleRemoveAvatarBtn(avatar !== DEFAULT_AVATAR);
-}
-
-// === دالة إزالة الصورة الشخصية ===
-function handleRemoveAvatar() {
-    const DEFAULT_AVATAR = 'https://via.placeholder.com/100';
-    const profileImage = document.getElementById('profileImage');
-    const editAvatarInput = document.getElementById('editAvatarInput');
-
-    if (profileImage) profileImage.src = DEFAULT_AVATAR;
-    localStorage.removeItem('userAvatar');
-    if (editAvatarInput) editAvatarInput.value = '';
-
-    toggleRemoveAvatarBtn(false);
-}
-
-// === دالة إظهار/إخفاء أزرار الحذف ===
-function toggleRemoveAvatarBtn(show) {
-    const removeAvatarBtn = document.getElementById('removeAvatarBtn');
-    const removeAvatarBtnInput = document.getElementById('removeAvatarBtnInput');
-
-    if (removeAvatarBtn) {
-        removeAvatarBtn.classList.toggle('d-none', !show);
-    }
-    if (removeAvatarBtnInput) {
-        removeAvatarBtnInput.classList.toggle('d-none', !show);
-    }
-}
-
-// === دالة حساب نسبة الإنجاز والإحصائيات ===
-function calculateTaskStats() {
-    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-
-    const totalTasks = tasks.length;
-    let pendingCount = 0;
-    let completedCount = 0;
-
-    tasks.forEach(task => {
-        if (task.status === 'Completed') {
-            completedCount++;
-        } else {
-            pendingCount++;
-        }
-    });
-
-    const completionRate = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
-
-    const userTotalTasks = document.getElementById('userTotalTasks');
-    const userPendingTasks = document.getElementById('userPendingTasks');
-    const userCompletedTasks = document.getElementById('userCompletedTasks');
-
-    if (userTotalTasks) userTotalTasks.textContent = totalTasks;
-    if (userPendingTasks) userPendingTasks.textContent = pendingCount;
-    if (userCompletedTasks) userCompletedTasks.textContent = completedCount;
-
-    const completionRateText = document.getElementById('completionRateText');
-    const completionProgressBar = document.getElementById('completionProgressBar');
-
-    if (completionRateText) completionRateText.textContent = `${completionRate}%`;
-    if (completionProgressBar) {
-        completionProgressBar.style.width = `${completionRate}%`;
-        completionProgressBar.setAttribute('aria-valuenow', completionRate);
-    }
-}
-
-// === دالة إظهار التنبيهات ===
-function showAlert(message, type = 'success') {
-    const alertEl = document.getElementById('profileAlert');
-    if (alertEl) {
-        alertEl.className = `alert alert-${type}`;
-        alertEl.textContent = message;
-        alertEl.classList.remove('d-none');
-
-        setTimeout(() => {
-            alertEl.classList.add('d-none');
-        }, 3000);
-    }
-}
-
-// === دالة تسجيل الخروج ===
 function logout() {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('currentUser');
-    window.location.href = 'login.html';
+    window.location.href = 'index.html';
 }

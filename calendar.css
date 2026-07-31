@@ -1,140 +1,31 @@
-#calendar {
-            max-height: calc(100vh - 160px);
-            min-height: 520px;
-        }
+/* ==========================================
+   1. Global Variables & Base Styles
+========================================== */
+:root {
+    --bg-body: #f1f5f9;
+    --card-bg: #ffffff;
+    --drop-zone-bg: #f8fafc;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --primary-color: #4f46e5;
+    --primary-hover: #4338ca;
+}
 
-        .fc {
-            background-color: #ffffff;
-            padding: 16px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-            border: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
-        }
-
-        .fc-toolbar-title {
-            font-size: 1.15rem !important;
-            font-weight: 700;
-        }
-
-        .fc-button-primary {
-            background-color: #4f46e5 !important;
-            border-color: #4f46e5 !important;
-            border-radius: 8px !important;
-            padding: 6px 12px !important;
-            font-size: 0.85rem !important;
-            font-weight: 500 !important;
-            box-shadow: none !important;
-        }
-
-        .fc-button-primary:hover {
-            background-color: #4338ca !important;
-            border-color: #4338ca !important;
-        }
-
-        .fc-button-active {
-            background-color: #3730a3 !important;
-            border-color: #3730a3 !important;
-        }
-
-        .fc-col-header-cell-cushion,
-        .fc-daygrid-day-number {
-            text-decoration: none !important;
-            font-size: 0.88rem;
-            font-weight: 600;
-            color: #334155;
-        }
-
-        /* ==========================================
-           FullCalendar Complete Dark Mode Fix
-        ========================================== */
-        [data-theme="dark"] body,
-        body.dark-mode {
-            background-color: #0b0f17 !important;
-            color: #f8fafc !important;
-        }
-
-        [data-theme="dark"] h2,
-        body.dark-mode h2 {
-            color: #ffffff !important;
-        }
-
-        /* حاوية التقويم في الدارك مود */
-        [data-theme="dark"] .fc,
-        body.dark-mode .fc {
-            background-color: #111827 !important;
-            color: #ffffff !important;
-            border-color: #1f2937 !important;
-        }
-
-        /* الحدود والأيام والصفوف */
-        [data-theme="dark"] .fc-theme-standard td, 
-        [data-theme="dark"] .fc-theme-standard th,
-        [data-theme="dark"] .fc-scrollgrid,
-        body.dark-mode .fc-theme-standard td,
-        body.dark-mode .fc-theme-standard th,
-        body.dark-mode .fc-scrollgrid {
-            border-color: #1f2937 !important;
-        }
-
-        [data-theme="dark"] .fc-col-header-cell-cushion,
-        [data-theme="dark"] .fc-daygrid-day-number,
-        body.dark-mode .fc-col-header-cell-cushion,
-        body.dark-mode .fc-daygrid-day-number {
-            color: #cbd5e1 !important;
-        }
-
-        /* اليوم الحالي وتأثير تحريك الماوس */
-        [data-theme="dark"] .fc-day-today,
-        body.dark-mode .fc-day-today {
-            background-color: rgba(79, 70, 229, 0.18) !important;
-        }
-
-        [data-theme="dark"] .fc-daygrid-day:hover,
-        body.dark-mode .fc-daygrid-day:hover {
-            background-color: #1e293b !important;
-        }
-
-        /* قائمة التفاصيل وحاوية المهام الإضافية (+more) */
-        [data-theme="dark"] .fc-popover,
-        body.dark-mode .fc-popover {
-            background-color: #1e293b !important;
-            border: 1px solid #334155 !important;
-        }
-
-        [data-theme="dark"] .fc-popover-header,
-        body.dark-mode .fc-popover-header {
-            background-color: #111827 !important;
-            color: #ffffff !important;
-        }
-
-        /* أزرار وقوائم الإشعارات والـ Header */
-        [data-theme="dark"] .notif-btn,
-        body.dark-mode .notif-btn {
-            background-color: #1e293b !important;
-            border-color: #334155 !important;
-            color: #ffffff !important;
-        }
-
-        [data-theme="dark"] .notif-dropdown,
-        body.dark-mode .notif-dropdown {
-            background-color: #111827 !important;
-            border: 1px solid #1f2937 !important;
-        }
-        * {
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
 body {
-    background: #f8fafc;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #1e293b;
+    background-color: var(--bg-body) !important;
+    color: var(--text-main);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
 /* ==========================================
-   Sidebar & Layout Styles
+   2. Layout & Sidebar
 ========================================== */
 .sidebar {
     background: #111827;
@@ -185,67 +76,33 @@ body {
 
 .sidebar .nav-link:hover,
 .sidebar .nav-link.active {
-    background: #4f46e5;
+    background: var(--primary-color);
     color: #ffffff;
 }
 
 /* ==========================================
-   Task Cards & Interactions
-========================================== */
-.task-card {
-    border: none;
-    border-radius: 16px;
-    background-color: #ffffff;
-    cursor: grab;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-}
-
-.task-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.09);
-}
-
-.task-card:active {
-    cursor: grabbing;
-}
-
-.task-card.dragging {
-    opacity: 0.4;
-    transform: scale(0.98);
-}
-
-/* ==========================================
-   Drag & Drop Zones
-========================================== */
-.drop-zone {
-    min-height: 250px;
-    background-color: rgba(0, 0, 0, 0.02);
-    border: 2px dashed transparent;
-    border-radius: 12px;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-/* التظليل عند تحريك العنصر فوق العمود */
-.drop-zone.drag-over {
-    background-color: rgba(79, 70, 229, 0.08);
-    border-color: #4f46e5;
-}
-
-/* ==========================================
-   Form Controls & Buttons
+   3. Form Controls & Buttons
 ========================================== */
 .form-control,
 .form-select {
     height: 45px;
     border-radius: 10px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    color: var(--text-main);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .form-control:focus,
 .form-select:focus {
-    border-color: #4f46e5;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+.input-group-text {
+    background-color: #e2e8f0;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
 }
 
 .btn {
@@ -256,18 +113,32 @@ body {
 }
 
 .btn-primary {
-    background-color: #4f46e5;
-    border-color: #4f46e5;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 .btn-primary:hover {
-    background-color: #4338ca;
-    border-color: #4338ca;
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
 }
 
-/* ==========================================
-   Notifications Styling
-========================================== */
+/* Badges */
+.badge.bg-warning {
+    background-color: #fef3c7 !important;
+    color: #b45309 !important;
+}
+
+.badge.bg-primary {
+    background-color: #e0e7ff !important;
+    color: #4338ca !important;
+}
+
+.badge.bg-success {
+    background-color: #dcfce7 !important;
+    color: #15803d !important;
+}
+
+/* Notifications */
 .notif-btn {
     width: 42px;
     height: 42px;
@@ -288,7 +159,6 @@ body {
     overflow: hidden;
 }
 
-/* تخصيص شكل شريط التمرير (Scrollbar) داخل قائمة الإشعارات */
 #notifList::-webkit-scrollbar {
     width: 5px;
 }
@@ -310,8 +180,79 @@ body {
 .extra-small {
     font-size: 0.75rem;
 }
+
 /* ==========================================
-   Complete & Fixed Dark Mode Setup
+   4. FullCalendar Styling & Layout Fix
+========================================== */
+/* إلغاء الـ scrollbar غير المرغوب فيه للشاشة */
+body {
+    overflow-x: hidden;
+}
+
+/* ضبط حاوية التقويم لملء المساحة بشكل ناعم دون قطع */
+#calendar {
+    min-height: 650px;
+    height: auto;
+}
+
+.fc {
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+/* ضبط هيدر التقويم والأزرار */
+.fc .fc-toolbar {
+    gap: 12px !important;
+    margin-bottom: 1.5rem !important;
+    flex-wrap: wrap; /* لضمان التجاوب على الشاشات الصغيرة */
+}
+
+.fc .fc-toolbar-chunk {
+    display: flex;
+    align-items: center;
+    gap: 8px !important;
+}
+
+.fc-toolbar-title {
+    font-size: 1.25rem !important;
+    font-weight: 700;
+}
+
+.fc-button-primary {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    border-radius: 8px !important;
+    padding: 6px 14px !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+}
+
+.fc-button-primary:hover {
+    background-color: var(--primary-hover) !important;
+    border-color: var(--primary-hover) !important;
+}
+
+.fc-button-active {
+    background-color: #3730a3 !important;
+    border-color: #3730a3 !important;
+}
+
+.fc-col-header-cell-cushion,
+.fc-daygrid-day-number {
+    text-decoration: none !important;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+/* ==========================================
+   5. Dark Mode Fixes
 ========================================== */
 [data-theme="dark"] body,
 body.dark-mode {
@@ -319,13 +260,11 @@ body.dark-mode {
     color: #f8fafc !important;
 }
 
-/* 1. العنوان الرئيسي */
 [data-theme="dark"] h2,
 body.dark-mode h2 {
     color: #ffffff !important;
 }
 
-/* 2. حقول البحث والفلاتر */
 [data-theme="dark"] .form-control,
 [data-theme="dark"] .form-select,
 [data-theme="dark"] .input-group-text,
@@ -337,44 +276,62 @@ body.dark-mode .input-group-text {
     color: #f8fafc !important;
 }
 
-/* 3. العمود الرئيسي لـ Kanban */
-[data-theme="dark"] #kanbanBoard .card,
-body.dark-mode #kanbanBoard .card {
-    background-color: #111827 !important; /* لون العمود داكن احترافي */
-    border: 1px solid #1f2937 !important;
+[data-theme="dark"] .fc,
+body.dark-mode .fc {
+    background-color: #111827 !important;
+    color: #ffffff !important;
+    border-color: #1f2937 !important;
 }
 
-/* 4. حل مشكلة المساحة البيضاء (The White Drop Zone Fix) */
-[data-theme="dark"] .drop-zone,
-body.dark-mode .drop-zone {
-    background-color: #1e293b !important; /* تحويل المساحة البيضاء الفاقعة إلى رمادي غامق مريح */
-    border: 1px dashed #334155 !important;
+[data-theme="dark"] .fc-theme-standard td, 
+[data-theme="dark"] .fc-theme-standard th,
+[data-theme="dark"] .fc-scrollgrid,
+body.dark-mode .fc-theme-standard td,
+body.dark-mode .fc-theme-standard th,
+body.dark-mode .fc-scrollgrid {
+    border-color: #1f2937 !important;
 }
 
-/* 5. كروت التاسكات نفسها لما تتضاف جوه العمود */
-[data-theme="dark"] .task-card,
-body.dark-mode .task-card {
-    background-color: #0f172a !important;
+[data-theme="dark"] .fc-col-header-cell-cushion,
+[data-theme="dark"] .fc-daygrid-day-number,
+body.dark-mode .fc-col-header-cell-cushion,
+body.dark-mode .fc-daygrid-day-number {
+    color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .fc-day-today,
+body.dark-mode .fc-day-today {
+    background-color: rgba(79, 70, 229, 0.18) !important;
+}
+
+[data-theme="dark"] .fc-daygrid-day:hover,
+body.dark-mode .fc-daygrid-day:hover {
+    background-color: #1e293b !important;
+}
+
+[data-theme="dark"] .fc-popover,
+body.dark-mode .fc-popover {
+    background-color: #1e293b !important;
     border: 1px solid #334155 !important;
-    color: #f8fafc !important;
 }
 
-[data-theme="dark"] .task-card h6,
-body.dark-mode .task-card h6 {
+[data-theme="dark"] .fc-popover-header,
+body.dark-mode .fc-popover-header {
+    background-color: #111827 !important;
     color: #ffffff !important;
 }
 
-[data-theme="dark"] .task-card p,
-body.dark-mode .task-card p {
-    color: #94a3b8 !important;
-}
-
-/* 6. تعديل زِر الإشعارات والـ Modals */
 [data-theme="dark"] .notif-btn,
 body.dark-mode .notif-btn {
     background-color: #1e293b !important;
     border-color: #334155 !important;
     color: #ffffff !important;
+}
+
+[data-theme="dark"] .notif-dropdown,
+body.dark-mode .notif-dropdown {
+    background-color: #111827 !important;
+    border: 1px solid #1f2937 !important;
 }
 
 [data-theme="dark"] .modal-content,
@@ -389,205 +346,4 @@ body.dark-mode .modal-content {
 body.dark-mode .modal-header,
 body.dark-mode .modal-footer {
     border-color: #1f2937 !important;
-}/* ==========================================
-   Soft & Eye-Friendly Light Mode Colors
-========================================== */
-:root {
-    --bg-body: #f1f5f9;            /* خلفية الصفحة الأساسية (رمادي ناعم مريح) */
-    --card-bg: #ffffff;            /* خلفية الكروت والأعمدة الرئيسية */
-    --drop-zone-bg: #f8fafc;       /* خلفية منطقة وضع التاسكات لتخفيف السطوع */
-    --text-main: #0f172a;          /* لون النص الرئيسي الداكن */
-    --text-muted: #64748b;         /* لون النص الفرعي */
-    --border-color: #e2e8f0;       /* ألوان الحدود الناعمة */
-    --primary-color: #4f46e5;      /* البنفسجي الأساسي */
-    --primary-hover: #4338ca;
 }
-
-body {
-    background-color: var(--bg-body) !important;
-    color: var(--text-main);
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-}
-
-/* ==========================================
-   Header & Search Inputs
-========================================== */
-.form-control,
-.form-select {
-    background-color: var(--card-bg);
-    color: var(--text-main);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    height: 45px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-}
-
-.form-control:focus,
-.form-select:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
-}
-
-.input-group-text {
-    background-color: #e2e8f0;
-    border: 1px solid var(--border-color);
-    color: var(--text-muted);
-}
-
-/* ==========================================
-   Kanban Column Cards & Drop Zones
-========================================== */
-/* الكروت الكبيرة للأعمدة */
-#kanbanBoard .card {
-    background-color: var(--card-bg) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
-}
-
-/* منطقة الإسقاط داخل العمود لتخفيف السطوع الأبيض */
-.drop-zone {
-    min-height: 380px;
-    background-color: var(--drop-zone-bg);
-    border: 1px dashed #cbd5e1;
-    border-radius: 12px;
-    padding: 10px;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-/* تأثير تحريك الكارت فوق العمود */
-.drop-zone.drag-over {
-    background-color: rgba(79, 70, 229, 0.06);
-    border-color: var(--primary-color);
-}
-
-/* ==========================================
-   Task Cards (الكروت التي تظهر داخل الأعمدة)
-========================================== */
-.task-card {
-    background-color: #ffffff !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.task-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08) !important;
-}
-
-/* ==========================================
-   Badges & Counters
-========================================== */
-.badge.bg-warning {
-    background-color: #fef3c7 !important;
-    color: #b45309 !important;
-}
-
-.badge.bg-primary {
-    background-color: #e0e7ff !important;
-    color: #4338ca !important;
-}
-
-.badge.bg-success {
-    background-color: #dcfce7 !important;
-    color: #15803d !important;
-}
-
-.fc {
-            background-color: var(--card-bg, #ffffff);
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-        .fc-toolbar-title {
-            font-size: 1.25rem !important;
-            font-weight: bold;
-        }
-        .fc-button-primary {
-            background-color: #4f46e5 !important;
-            border-color: #4f46e5 !important;
-            border-radius: 8px !important;
-        }
-        .fc-button-primary:hover {
-            background-color: #4338ca !important;
-            border-color: #4338ca !important;
-        }
-        [data-theme="dark"] .fc {
-            background-color: #111827 !important;
-            color: #ffffff !important;
-            border: 1px solid #1f2937;
-        }
-        [data-theme="dark"] .fc-theme-standard td,
-        [data-theme="dark"] .fc-theme-standard th,
-        [data-theme="dark"] .fc-scrollgrid {
-            border-color: #1f2937 !important;
-        }
-        [data-theme="dark"] .fc-col-header-cell-cushion,
-        [data-theme="dark"] .fc-daygrid-day-number {
-            color: #cbd5e1 !important;
-            text-decoration: none;
-        }
-        /* ==========================================
-           1. Calendar Sizing & Button Spacing Fixes
-        ========================================== */
-        #calendar {
-            max-height: calc(100vh - 160px);
-            min-height: 520px;
-        }
-
-        .fc {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-            border: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
-        }
-
-        /* ضبط المسافات بين أزرار التقويم العلوية */
-        .fc .fc-toolbar {
-            gap: 12px !important;
-            margin-bottom: 1.5rem !important;
-        }
-
-        .fc .fc-toolbar-chunk {
-            display: flex;
-            align-items: center;
-            gap: 8px !important; /* مسافة مريحة بين أزرار prev, next, today */
-        }
-
-        .fc-toolbar-title {
-            font-size: 1.2rem !important;
-            font-weight: 700;
-        }
-
-        .fc-button-primary {
-            background-color: #4f46e5 !important;
-            border-color: #4f46e5 !important;
-            border-radius: 8px !important;
-            padding: 6px 14px !important;
-            font-size: 0.85rem !important;
-            font-weight: 500 !important;
-            box-shadow: none !important;
-            margin: 0 !important;
-        }
-
-        .fc-button-primary:hover {
-            background-color: #4338ca !important;
-            border-color: #4338ca !important;
-        }
-
-        .fc-button-active {
-            background-color: #3730a3 !important;
-            border-color: #3730a3 !important;
-        }
-
-        .fc-col-header-cell-cushion,
-        .fc-daygrid-day-number {
-            text-decoration: none !important;
-            font-size: 0.88rem;
-            font-weight: 600;
-            color: #334155;
-        }
